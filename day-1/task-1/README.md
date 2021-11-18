@@ -32,7 +32,7 @@ kubectl logs my-pod-name
 kubectl exec -it my-pod-name bash 
 
 # Listen on port 8888 locally, forwarding to 5000 in the pod
-kubectl port-forward mypod 8888:5000
+kubectl port-forward my-pod-name 8888:5000
 
 # Delete a pod
 kubectl delete po my-pod-name
