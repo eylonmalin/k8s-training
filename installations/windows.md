@@ -7,7 +7,7 @@
 4. Install kind
    1) Download https://kind.sigs.k8s.io/dl/v0.11.1/kind-windows-amd64
    2) Rename the downloaded file to kind.exe
-   3) Copy kind.exe to some path you keep exe tools (like C:/app). We would Call it KIND_PATH
+   3) Copy kind.exe to some path where you keep exe tools (like C:/app). We would Call it KIND_PATH
 5. (Optional) install cmder from here : https://cmder.net/
 6. Create k8s cluster
 ```shell
