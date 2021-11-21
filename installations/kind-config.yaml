@@ -2,7 +2,7 @@
 # NOTE: this is not a particularly useful config file
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
-name: k8s-cluster
+name: kind
 # patch the generated kubeadm config with some extra settings
 kubeadmConfigPatches:
   - |
@@ -23,6 +23,9 @@ kubeadmConfigPatchesJSON6902:
 nodes:
   # the control plane node config
   - role: control-plane
+    extraPortMappings:
+    - containerPort: 31999
+      hostPort: 31999
   # the three workers
   - role: worker
   - role: worker
