@@ -70,7 +70,7 @@ spec:
     spec:
       containers:
       - name: lc-app # The container name
-        image: navivi/lets-chat-app:v1 # The DockerHub image
+        image: eylonmalin/lets-chat-app:v1 # The DockerHub image
         ports:
         - containerPort: 8080 # Open pod port 80 for the container
         livenessProbe:
