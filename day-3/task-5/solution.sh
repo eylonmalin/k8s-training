@@ -115,7 +115,7 @@ spec:
     spec:
       containers:
       - name: lc-web # The container name
-        image: navivi/lets-chat-web:v1 # The DockerHub image
+        image: eylonmalin/lets-chat-web:v1 # The DockerHub image
         ports:
         - containerPort: 80 # Open pod port 80 for the container
         env: # [OPTIONAL] add environments values 

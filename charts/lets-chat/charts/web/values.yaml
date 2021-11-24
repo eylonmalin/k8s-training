@@ -4,7 +4,7 @@
 replicaCount: 3
 
 # The values of the web-container
-image: navivi/lets-chat-web:v1
+image: eylonmalin/lets-chat-web:v1
 containerPort: 80
 env:
   CODE_ENABLED: false

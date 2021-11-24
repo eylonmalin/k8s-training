@@ -1,7 +1,7 @@
 # Task-3: Rolling-Update Lets-Chat-Web
 1. Delete the previous Deployment, using  **kubectl delete deploy** command, of Lets-Chat-Web microservice and create new Deployment using **kubectl create -f web-deploy.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define the yaml files
-  > * The Image name of Lets-Chat-Web:  **navivi/lets-chat-web:v1**
+  > * The Image name of Lets-Chat-Web:  **eylonmalin/lets-chat-web:v1**
   > * The Web server is listening on port 80
   > * Disable the code feature by configuring the Lets-Chat-Web with environment variable name: **CODE_ENABLED** and value "false".
   > * Add a second label to the pods (in spec.template.labels of web-deploy.yaml) of **version:v1** 
