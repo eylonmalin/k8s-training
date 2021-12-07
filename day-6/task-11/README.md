@@ -1,81 +1,40 @@
-# Task-11: Expose Lets-Chat on FQDN:80 Using Ingress and Nginx-Controller
+# Task-12: Write Helm Chart for Lets-Chat-Web
 
-***First - Install Ingress Controller on the kind cluster by following the instructions here: [Setting Up An Ingress Controller](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)***
+In this task we will install Lets-Chat-Web using helm chart. (Lets-Chat-App and Lets-Chat-DB will remain as before)
+The Lets-Chat-Web will be a simple pod - with one container and no ConfigMap
 
-In this task we would like to expose Lets-Chat application on port 80 - so we could access the application on http://k8s-training.com
-
-1. Add Ingress with rule to Lets-Chat-Web service using **kubectl create -f web-ingress.yaml**
-  > * You can use bellow [Specifications Examples](#specifications-examples) to define web-ingress.yaml
-  > * The host to kubernetes cluster is **k8s-training.com**. 
+1. First you should delete the Lets-Chat-Web **deployment**, **service**, **ingress** and **configmap**.
+2. Create scaffold chart using **helm create web**
+  > * The command will create chart directory with templates of **deployment**, **service** and **ingress**
+  > * Update the values.yaml with the image repository and tag of Lets-Chat-Web
+  > * Enable the ingress and update the hosts to **k8s-training.com**
+  > * Update the Probes in templates/deployment.yaml. the httpGet.path shoud be /media/favicon.ico
+  > * Add Environment variables to templates/deployment.yaml: **CODE_ENABLED="false"**, **APP_HOST=app-service-name**, **APP_PORT="app-service-port"**
+3. Before Install - verify the generated yaml files are valid using `helm install --name release-name --dry-run --debug chart-path`. Where release-name is any name you choose (For example: 'lc'). And chart-path is the path to the created charts direcory.
+4. Install Lets-Chat-Web using helm
+  > * You can install it using `helm install --name release-name chart-path`. 
+  > * If you need to apply changes - you can edit the yaml files and then run `helm upgrade release-name chart-path`
+  > * Verify the pod is up and running
   > * Verify you can access the application on http://k8s-training.com
-  > * What happens when you login and try to add new room? Check the browser DevTools (F12)
-2. To load balance a WebSocket application with NGINX Ingress controllers, you need to add the nginx.org/websocket-services annotation to your Ingress resource definition. But since the client is connected with WebSocket seesion to the Lets-Chat-App service (and not the Lets-Chat-Web) - You should create another Ingress with rule to Lets-Chat-App
-  > * You should add this Ingress the `nginx.org/websocket-services` annotation
-  > * The path to the WebSocket is `/socket.io/`
-
-  
-### Specifications Examples
-#### ingress.yaml
+5. Move the environment varaibles values from templates/deployment.yaml to values.yaml
+  > * You can add to values.yaml
 ```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-spec:
-  rules:
-    - host: my-host.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: my-service
-                port:
-                  number: 80
+env: 
+  CODE_ENABLED: false
+  APP_HOST: lc-app
+  APP_PORT: 8080
 ```
-
-#### ingress-with-websocket-annotation.yaml
+      And then in templates/deployment.yaml change the value to {{ .Values.env.CODE_ENABLED | quote }}
+  > * Update using `helm upgrade release-name chart-path`
+6. Now, lets improve the templates/deployment.yaml with loop over the Environment Variables - so we could get the name and the value from values.yaml
+  > * You can use helm range for loop:
 ```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-  annotations:
-    nginx.org/websocket-services: "my-ws-service"
-spec:
-  rules:
-    - host: my-host.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: my-service
-                port:
-                  number: 8080
+env:
+{{- range $name, $value := .Values.env }}
+- name: {{ $name }}
+  value: {{ $value | quote }}
+{{- end }}
 ```
+  > * Update using `helm upgrade release-name chart-path`
 
-#### ingress-with-rewrite-annotation.yaml
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  rules:
-    - host: my-host.com
-      http:
-        paths:
-          - path: /relative-path
-            pathType: Prefix
-            backend:
-              service:
-                name: my-service
-                port:
-                  number: 8080
-```
-
+ 
