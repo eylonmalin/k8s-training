@@ -5,7 +5,7 @@
   > * Get the Service Cluster-IP using `kubectl get svc` command. Then access one of the nodes in the cluster using `docker exec -it kind-worker bash`, and there curl service-cluster-ip:service-port.
 2. Change the Service type from ClusterIP to NodePort to make it accessible from outside the cluster.
   > * Use `kubectl edit svc my-service-name` to update the service specification with **type: NodePort**
-  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and acceess Lets-Chat-Web UI using kind-worker:node-port.  Make sure you can access the UI also from the other 2 nodes.
+  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and acceess Lets-Chat-Web UI using localhost:31999.  Make sure you can access the UI also from the other 2 nodes.
 3. Scale the Lets-Chat-Web pods to 4 instances using  **kubectl scale** command
   > * Explore the pods, using `kubectl get po -o wide`, to see which Nodes the new pods were scheduled to.
   > * Open the browser and acceess Lets-Chat-Web UI using each node in the cluster and see which pod responds.
