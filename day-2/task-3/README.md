@@ -3,12 +3,14 @@
   > * You can use bellow [Specifications Examples](#specifications-examples) to define the yaml files
   > * The Image name of Lets-Chat-Web:  **eylonmalin/lets-chat-web:v1**
   > * The Web server is listening on port 80
+  > * The deployment should run 3 pods 
   > * Disable the code feature by configuring the Lets-Chat-Web with environment variable name: **CODE_ENABLED** and value "false".
   > * Add a second label to the pods (in spec.template.labels of web-deploy.yaml) of **version:v1** 
 2. Create a Service to Lets-Chat-Web microservice using **kubectl create -f web-svc.yaml** command
   > * The service type of this microservice should be NodePort
-3. Verify the pods are ready and you are able to access Lets-Chat-Web UI via browser using node-port
-  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and acceess Lets-Chat-Web UI using kube-node-1:node-port.  Make sure you can access the UI also from the other 2 nodes.
+  > * The NodePort should be 31999
+3. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
+  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:node-port.
   > * Check the logs of the pods - and see it runs v1 image
 4. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **navivi/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
   > * Explore the pods rolling update using `kubectl get po --show-labels`
@@ -39,6 +41,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment # The name of your deployment
+  labels: # The label of the deployment itself
+    app: nginx 
 spec:
   replicas: 1 # Number of replicated pods
   selector:
