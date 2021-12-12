@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
       - name: lc-web # The container name
-        image: navivi/lets-chat-web:${VERSION} # The DockerHub image
+        image: eylonmalin/lets-chat-web:${VERSION} # The DockerHub image
         ports:
         - containerPort: 80 # Open pod port 80 for the container
         env: # [OPTIONAL] add environments values 
@@ -76,6 +76,7 @@ spec:
     app: lc-web  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
   ports:
   - protocol: TCP
+    nodePort: 31999 # The node port (external)
     port: 80 # The service port
     targetPort: 80 # The pods port
   type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line 
@@ -95,7 +96,7 @@ create-web-svc(){
 
 get-pods-every-2-sec-until-running(){
   echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-  while read pods_status <<< `kubectl get po | grep -v NAME | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ $pods_status != "Running Running Running" ]]; do
+  while read pods_status <<< `kubectl get po | grep lc-web | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ $pods_status != "Running Running Running" ]]; do
     echo "\$ kubectl get po -o wide --show-labels"
     kubectl get po -o wide --show-labels
     sleep 2
@@ -111,11 +112,11 @@ get-web-svc-node-port(){
   cut -d'/' -f1 <<< $web_node_port
 }
 
-curl-each-node(){
+curl-localhost(){
   web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/media/favicon.ico"
+  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/media/favicon.ico"
   read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/media/favicon.ico)
+  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/media/favicon.ico)
   echo $RESULT
   echo "---------------------------------------------------"
 }
@@ -199,8 +200,8 @@ get-pods-every-2-sec-until-running
 echo -n "Next >>"
 read text
 clear
-echo -e "${GREEN}Going to curl the Service on each node:${NC}"
-curl-each-node
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
+curl-localhost
 echo -n "Next >>"
 read text
 clear
@@ -211,7 +212,7 @@ read text
 clear
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "4. Update the deployment, using kubectl apply -f web-deploy.yaml command, and change the image to "
-echo -e "    navivi/lets-chat-web:v2 and also change the label to version: v2 in spec.template.labels${NC}"
+echo -e "    eylonmalin/lets-chat-web:v2 and also change the label to version: v2 in spec.template.labels${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Changing web-deploy.yaml file:${NC}"

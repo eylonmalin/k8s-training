@@ -12,7 +12,7 @@
 3. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
   > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:node-port.
   > * Check the logs of the pods - and see it runs v1 image
-4. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **navivi/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
+4. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **eylonmalin/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
   > * Explore the pods rolling update using `kubectl get po --show-labels`
   > * Verify the update using `kubectl logs new-pod-name`
 5. Rollback to the previous deployment using `kubectl rollout undo deployment deploy-name`
@@ -31,6 +31,7 @@ spec:
     app: nginx  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
   ports:
   - protocol: TCP
+    nodePort: 31999 # the node(external) port
     port: 80 # The service port
     targetPort: 80 # The pods port
   type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line 
