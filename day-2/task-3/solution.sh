@@ -5,6 +5,12 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m' 
 NC='\033[0m' # No Color
 
+printAndExec() {
+  echo -n "\$ $*"
+  read text
+  eval "$@"
+}
+
 clean(){
   local lc_deploy=$(kubectl get deploy | grep lc-web  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_deploy} ]]; then
@@ -56,12 +62,9 @@ EOF
 }
 
 create-web-deploy(){
-  echo -n "\$ kubectl create --save-config -f web-deploy.yaml"
-  read text
-	kubectl create --save-config -f web-deploy.yaml
-  echo -n "\$ kubectl get deploy"
-  read text
-  kubectl get deploy
+	printAndExec kubectl create --save-config -f web-deploy.yaml
+  printAndExec kubectl get deploy
+  printAndExec kubectl rollout history deployment lc-web
 }
 
 write-web-svc-yaml(){
@@ -85,13 +88,8 @@ EOF
 }
 
 create-web-svc(){
-  echo -n "\$ kubectl create -f web-svc.yaml"
-  read text
-	kubectl create -f web-svc.yaml
-
-  echo -n "\$ kubectl get svc"
-  read text
-	kubectl get svc
+	printAndExec kubectl create -f web-svc.yaml
+	printAndExec kubectl get svc
 }
 
 get-pods-every-2-sec-until-running(){
@@ -123,24 +121,20 @@ curl-localhost(){
 
 check-logs-in-pods(){
   for pod in `kubectl get po | grep lc-web | awk '{print $1}'`; do
-    echo -n "\$ kubectl logs $pod"
-    read text
-    kubectl logs $pod
+    printAndExec kubectl logs $pod
     echo "---------------------------------------------------"
   done
 }
 
 apply-web-deploy(){
-  echo -n "\$ kubectl apply -f web-deploy.yaml"
-  read text
-  kubectl apply -f web-deploy.yaml
+  printAndExec kubectl apply -f web-deploy.yaml
+  printAndExec kubectl rollout history deployment lc-web
   sleep 1
 }
 
 rollout-undo(){
-  echo -n "\$ kubectl rollout undo deployment lc-web"
-  read text
-  kubectl rollout undo deployment lc-web
+  printAndExec kubectl rollout undo deployment lc-web
+  printAndExec kubectl rollout history deployment lc-web
   sleep 1
 }
 
