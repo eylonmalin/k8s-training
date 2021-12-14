@@ -12,6 +12,12 @@ printWaitExec() {
   eval "$@"
 }
 
+printExec() {
+  echo "\$ $*"
+  echo -n
+  eval "$@"
+}
+
 next() {
   echo -n "Next >>"
   read text

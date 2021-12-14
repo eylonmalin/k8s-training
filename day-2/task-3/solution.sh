@@ -5,14 +5,12 @@ source ../../tools/solution_utils.sh
 clean(){
   local lc_deploy=$(kubectl get deploy | grep lc-web  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_deploy} ]]; then
-    echo "\$ kubectl delete deploy ${lc_deploy}"
-    kubectl delete deploy ${lc_deploy}
+    printExec kubectl delete deploy ${lc_deploy}
   fi
 
   local lc_svc=$(kubectl get svc | grep lc-web | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_svc} ]]; then
-    echo "\$ kubectl delete svc ${lc_svc}"
-    kubectl delete svc ${lc_svc}
+    printExec kubectl delete svc ${lc_svc}
   fi
 
   rm -f web-deploy.yaml
@@ -86,13 +84,11 @@ create-web-svc(){
 get-pods-every-2-sec-until-running(){
   echo -e "${GREEN}Every 2 sec, get pods:${NC}"
   while read pods_status <<< `kubectl get po | grep lc-web | awk '{print $3}' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`; [[ $pods_status != "Running Running Running" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels"
-    kubectl get po -o wide --show-labels
+    printExec kubectl get po -o wide --show-labels
     sleep 2
     echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels
+  done
+  printExec kubectl get po -o wide --show-labels
 }
 
 get-web-svc-node-port(){
