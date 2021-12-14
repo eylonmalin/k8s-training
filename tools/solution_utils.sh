@@ -27,3 +27,13 @@ next() {
 echoDashes() {
   echo "----------------------------------------------"
 }
+
+create-deploy(){
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get deploy
+}
+
+create-svc(){
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get svc
+}

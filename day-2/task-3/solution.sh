@@ -51,8 +51,7 @@ EOF
 }
 
 create-web-deploy(){
-	printWaitExec kubectl apply -f web-deploy.yaml
-  printWaitExec kubectl get deploy
+  create-deploy web-deploy.yaml
   printWaitExec kubectl rollout history deployment lc-web
 }
 
@@ -77,13 +76,12 @@ EOF
 }
 
 create-web-svc(){
-	printWaitExec kubectl apply -f web-svc.yaml
-	printWaitExec kubectl get svc
+  create-svc web-svc.yaml
 }
 
 get-pods-every-2-sec-until-running(){
   echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-  while read pods_status <<< `kubectl get po | grep lc-web | awk '{print $3}' | sed -e ':a' -e 'N' -e '$!ba' -e 's/\n/ /g'`; [[ $pods_status != "Running Running Running" ]]; do
+  while read pods_status <<< `kubectl get po | grep lc-web | awk '{print $3}'`; [[ $pods_status != "Running Running Running" ]]; do
     printExec kubectl get po -o wide --show-labels
     sleep 2
     echo "-------------------------------------"

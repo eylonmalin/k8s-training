@@ -1,45 +1,36 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 clean(){
   local lc_deploy=$(kubectl get deploy | grep lc-web  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_deploy} ]]; then
-    echo "\$ kubectl delete deploy ${lc_deploy}"
-    kubectl delete deploy ${lc_deploy}
+    printExec kubectl delete deploy ${lc_deploy}
   fi
 
   local lc_svc=$(kubectl get svc | grep lc-web | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_svc} ]]; then
-    echo "\$ kubectl delete svc ${lc_svc}"
-    kubectl delete svc ${lc_svc}
+    printExec kubectl delete svc ${lc_svc}
   fi
 
   local lc_deploy=$(kubectl get deploy | grep lc-app  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_deploy} ]]; then
-    echo "\$ kubectl delete deploy ${lc_deploy}"
-    kubectl delete deploy ${lc_deploy}
+    printExec kubectl delete deploy ${lc_deploy}
   fi
 
   local lc_svc=$(kubectl get svc | grep lc-app | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_svc} ]]; then
-    echo "\$ kubectl delete svc ${lc_svc}"
-    kubectl delete svc ${lc_svc}
+    printExec kubectl delete svc ${lc_svc}
   fi
 
   local lc_deploy=$(kubectl get deploy | grep lc-db  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_deploy} ]]; then
-    echo "\$ kubectl delete deploy ${lc_deploy}"
-    kubectl delete deploy ${lc_deploy}
+    printExec kubectl delete deploy ${lc_deploy}
   fi
 
   local lc_svc=$(kubectl get svc | grep lc-db | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_svc} ]]; then
-    echo "\$ kubectl delete svc ${lc_svc}"
-    kubectl delete svc ${lc_svc}
+    printExec kubectl delete svc ${lc_svc}
   fi
 
 
@@ -196,30 +187,12 @@ spec:
     app: lc-web  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
   ports:
   - protocol: TCP
+    nodePort: 31999 # The node port (external)
     port: 80 # The service port
     targetPort: 80 # The pods port
   type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line 
 EOF
   cat web-svc.yaml
-}
-
-create-deploy(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-  echo -n "\$ kubectl get deploy"
-  read text
-  kubectl get deploy
-}
-
-create-svc(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-
-  echo -n "\$ kubectl get svc"
-  read text
-  kubectl get svc
 }
 
 get-pods-every-2-sec-until-running(){
@@ -231,9 +204,8 @@ get-pods-every-2-sec-until-running(){
     pods_running_status="Running"
   fi
 
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
+  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}'`; [[ "$pods_status" != "$pods_running_status" ]]; do
+    printExec kubectl get po -o wide --show-labels | grep $1
     sleep 2
     echo "-------------------------------------"
   done  
@@ -249,9 +221,9 @@ get-web-svc-node-port(){
 
 curl-each-node(){
   web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login"
+  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/login"
   read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login)
+  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/login)
   echo $RESULT
   echo "---------------------------------------------------"
 }
@@ -274,106 +246,74 @@ echo -n ">>"
 read text
 echo -e "${GREEN}Cleaning first..................${NC}"
 clean
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Writing db-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-db-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the db Deployment:${NC}"
 create-deploy db-deploy.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Writing db-svc.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-db-svc-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the db Service:${NC}"
 create-svc db-svc.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-db
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "2. Create a Deploy and a Service to Lets-Chat-APP microservice "
 echo -e "    using kubectl apply -f app-deploy.yaml app-svc.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the app Deployment:${NC}"
 create-deploy app-deploy.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Writing app-svc.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-svc-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the app Service:${NC}"
 create-svc app-svc.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-app
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "3. Update the previous Deploy of Lets-Chat-Web to "
 echo -e "    connect to Lets-Chat-App service using kubectl apply -f web-deploy.yaml${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing web-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-web-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the web Deployment:${NC}"
 create-deploy web-deploy.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Writing web-svc.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-web-svc-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the web Service:${NC}"
 create-svc web-svc.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-web 3
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "4. Open the service on the Node Port and access the login page.${NC}"
 echo -n ">>"
