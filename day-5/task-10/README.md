@@ -4,7 +4,7 @@
 
 In this task we would like to expose Lets-Chat application on port 80 - so we could access the application on http://k8s-training.com
 
-1. Add Ingress with rule to Lets-Chat-Web service using **kubectl create -f web-ingress.yaml**
+1. Add Ingress with rule to Lets-Chat-Web service using **kubectl apply -f web-ingress.yaml**
   > * You can use bellow [Specifications Examples](#specifications-examples) to define web-ingress.yaml
   > * The host to kubernetes cluster is **k8s-training.com**. 
   > * Verify you can access the application on http://k8s-training.com

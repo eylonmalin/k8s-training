@@ -1,21 +1,22 @@
 # Task-3: Rolling-Update Lets-Chat-Web
-1. Delete the previous Deployment, using  **kubectl delete deploy** command, of Lets-Chat-Web microservice and create new Deployment using **kubectl create -f web-deploy.yaml** command
+1. Delete the previous Deployment of Lets-Chat-Web microservice, using **kubectl delete deploy** command.
+2. Create new Deployment using **kubectl apply -f web-deploy.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define the yaml files
   > * The Image name of Lets-Chat-Web:  **eylonmalin/lets-chat-web:v1**
   > * The Web server is listening on port 80
   > * The deployment should run 3 pods 
   > * Disable the code feature by configuring the Lets-Chat-Web with environment variable name: **CODE_ENABLED** and value "false".
   > * Add a second label to the pods (in spec.template.labels of web-deploy.yaml) of **version:v1** 
-2. Create a Service to Lets-Chat-Web microservice using **kubectl create -f web-svc.yaml** command
+3. Create a Service to Lets-Chat-Web microservice using **kubectl apply -f web-svc.yaml** command
   > * The service type of this microservice should be NodePort
   > * The NodePort should be 31999
-3. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
+4. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
   > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:node-port.
   > * Check the logs of the pods - and see it runs v1 image
-4. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **eylonmalin/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
+5. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **eylonmalin/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
   > * Explore the pods rolling update using `kubectl get po --show-labels`
   > * Verify the update using `kubectl logs new-pod-name`
-5. Rollback to the previous deployment using `kubectl rollout undo deployment deploy-name`
+6. Rollback to the previous deployment using `kubectl rollout undo deployment deploy-name`
   > * Explore the pods rollback using `kubectl get po --show-labels`
   > * Verify the update using `kubectl logs new-pod-name`
 

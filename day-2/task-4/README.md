@@ -1,13 +1,13 @@
 # Task-4: Discover all Lets-Chat microservices
 ![image](https://user-images.githubusercontent.com/34754379/118401725-6eb65400-b66f-11eb-82d7-907ca884e012.png)
 
-1. Create a Deploy and a Service to Lets-Chat-DB microservice using **kubectl create -f db-deploy.yaml db-svc.yaml** command
+1. Create a Deploy and a Service to Lets-Chat-DB microservice using **kubectl apply -f db-deploy.yaml db-svc.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define the yaml files
   > * You can use the public latest image. Image name: **mongo**
   > * The MongoDB server is listening on port 27017
   > * Make sure you create ONLY one relica of this pod
   > * The service type of this microservice should not be NodePort - so don't add **type** to yaml
-2. Create a Deploy and a Service to Lets-Chat-APP microservice using **kubectl create -f app-deploy.yaml app-svc.yaml** command
+2. Create a Deploy and a Service to Lets-Chat-APP microservice using **kubectl apply -f app-deploy.yaml app-svc.yaml** command
   > * The Image name of Lets-Chat-App: **eylonmalin/lets-chat-app:v1**
   > * The App Node.js server is listening on port 8080
   > * You may configure the Lets-Chat-App with the Lets-Chat-DB service-name and port by passing it 2 environment variables: **MONGO_HOST** and **MONGO_PORT**

@@ -4,10 +4,10 @@ We will use External NFS server.
 1. Start the NFS server on your VM (which is outside the Kubernetes Cluster)
   > * You can start the NFS server using `sudo systemctl start nfs-kernel-server.service`
   > * You can check which directory is exported in `sudo cat /etc/exports`
-2. Create PersistentVolume to the External NFS Server using **kubectl create -f pv.yaml** command
+2. Create PersistentVolume to the External NFS Server using **kubectl apply -f pv.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define pv yaml file
   > * Your VM server IP is **172.17.0.1** and the path should be as specified in **/etc/exports**
-3. Create PersistentVolumeClaim for the PersistentVolume using **kubectl create -f pvc.yaml** command
+3. Create PersistentVolumeClaim for the PersistentVolume using **kubectl apply -f pvc.yaml** command
   > * Make sure the PersistentVolumeClaim is bounded to the PersistentVolume using **kubectl get pv**
 4. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim
   > * The mountPath for persisting uploads should be /usr/src/app/uploads

@@ -1,5 +1,5 @@
 # Task-7: Add ConfigMap and Secrets data to a Volume
-1. Create ConfigMap in yaml file using **kubectl create --save-config -f app-config.yaml** command
+1. Create ConfigMap in yaml file using **kubectl apply -f app-config.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define config yaml file
   > * The ConfigMap should contain a file named **settings.yml**. The content of that file should be as follow:
   ```yaml
@@ -13,7 +13,7 @@
 2. Update Lets-Chat-App Deployment to take that ConfigMap as a Volume
   > * The Volume Mount in the container for this file should be: /usr/src/app/config
   > * Open Browser and make sure the upload-files feature is enabled and you are able to upload images in a chat room
-3. Create Secret in yaml file using **kubectl create --save-config -f app-secret.yaml** command
+3. Create Secret in yaml file using **kubectl apply -f app-secret.yaml** command
   > * The Secret should contain a file named **secret.key**. The content of that file should be as follow: Note the value should be in base64
   ```
 -----BEGIN CERTIFICATE REQUEST-----

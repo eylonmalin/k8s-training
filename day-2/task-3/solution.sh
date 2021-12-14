@@ -62,7 +62,7 @@ EOF
 }
 
 create-web-deploy(){
-	printAndExec kubectl create --save-config -f web-deploy.yaml
+	printAndExec kubectl apply -f web-deploy.yaml
   printAndExec kubectl get deploy
   printAndExec kubectl rollout history deployment lc-web
 }
@@ -88,7 +88,7 @@ EOF
 }
 
 create-web-svc(){
-	printAndExec kubectl create -f web-svc.yaml
+	printAndExec kubectl apply -f web-svc.yaml
 	printAndExec kubectl get svc
 }
 
@@ -159,7 +159,7 @@ echo
 
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "1. Delete the previous Deployment, using kubectl delete deploy command, of Lets-Chat-Web microservice "
-echo -e "   and create new Deployment using kubectl create -f web-deploy.yaml command${NC}"
+echo -e "   and create new Deployment using kubectl apply -f web-deploy.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Cleaning first..................${NC}"
@@ -174,7 +174,7 @@ echo -e "${GREEN}Create the new Deployment:${NC}"
 create-web-deploy
 next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "2. Create a Service to Lets-Chat-Web microservice using kubectl create -f web-svc.yaml command${NC}"
+echo -e "2. Create a Service to Lets-Chat-Web microservice using kubectl apply -f web-svc.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing web-svc.yaml file:${NC}"

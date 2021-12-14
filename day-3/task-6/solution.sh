@@ -212,18 +212,18 @@ EOF
 }
 
 create-configmap(){
-  echo -n "\$ kubectl create --save-config -f $1"
+  echo -n "\$ kubectl apply -f $1"
   read text
-  kubectl create --save-config -f $1
+  kubectl apply -f $1
   echo -n "\$ kubectl get cm"
   read text
   kubectl get cm
 }
 
 create-secret(){
-  echo -n "\$ kubectl create --save-config -f $1"
+  echo -n "\$ kubectl apply -f $1"
   read text
-  kubectl create --save-config -f $1
+  kubectl apply -f $1
   echo -n "\$ kubectl get secret"
   read text
   kubectl get secret
@@ -281,7 +281,7 @@ echo
 
 echo -e "${RED}Make sure you run this solution after you successfully executed Task 5 solution${NC}"
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "1. Create ConfigMap in yaml file using **kubectl create --save-config -f lc-config.yaml** command${NC}"
+echo -e "1. Create ConfigMap in yaml file using **kubectl apply -f lc-config.yaml** command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing lc-config.yaml file:${NC}"
@@ -317,7 +317,7 @@ echo -n "Next >>"
 read text
 clear
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "3. Create Secret in yaml file using kubectl create --save-config -f db-secret.yaml command${NC}"
+echo -e "3. Create Secret in yaml file using kubectl apply -f db-secret.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing db-secret.yaml file:${NC}"

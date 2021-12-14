@@ -204,18 +204,18 @@ EOF
 }
 
 create-deploy(){
-  echo -n "\$ kubectl create --save-config -f $1"
+  echo -n "\$ kubectl apply -f $1"
   read text
-  kubectl create --save-config -f $1
+  kubectl apply -f $1
   echo -n "\$ kubectl get deploy"
   read text
   kubectl get deploy
 }
 
 create-svc(){
-  echo -n "\$ kubectl create -f $1"
+  echo -n "\$ kubectl apply -f $1"
   read text
-  kubectl create -f $1
+  kubectl apply -f $1
 
   echo -n "\$ kubectl get svc"
   read text
@@ -269,7 +269,7 @@ echo
 
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "1. Create a Deploy and a Service to Lets-Chat-DB microservice"
-echo -e "    using kubectl create -f db-deploy.yaml db-svc.yaml command${NC}"
+echo -e "    using kubectl apply -f db-deploy.yaml db-svc.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Cleaning first..................${NC}"
@@ -308,7 +308,7 @@ read text
 clear
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "2. Create a Deploy and a Service to Lets-Chat-APP microservice "
-echo -e "    using kubectl create -f app-deploy.yaml app-svc.yaml command${NC}"
+echo -e "    using kubectl apply -f app-deploy.yaml app-svc.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"

@@ -2,19 +2,19 @@
 
 echo "Going to setup cluster for k8s-training/day-4"
 for secret in *-secret.yaml ; do
-	kubectl create -f $secret
+	kubectl apply -f $secret
 done
 
 for config in *-config.yaml ; do
-	kubectl create -f $config
+	kubectl apply -f $config
 done
 
 for svc in *-svc.yaml ; do
-	kubectl create -f $svc
+	kubectl apply -f $svc
 done
 
 for deploy in *-deploy.yaml ; do
-	kubectl create -f $deploy
+	kubectl apply -f $deploy
 done
 
 watch kubectl get po
