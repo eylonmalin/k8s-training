@@ -65,7 +65,7 @@ spec:
       - name: lc-db # The container name
         image: mongo # The DockerHub image
         ports:
-        - containerPort: 27017 # Open pod port 80 for the container
+        - containerPort: 27017 # Open pod port 27017 for the container
 EOF
   cat db-deploy.yaml
 }
@@ -111,7 +111,7 @@ spec:
       - name: lc-app # The container name
         image: eylonmalin/lets-chat-app:v1 # The DockerHub image
         ports:
-        - containerPort: 8080 # Open pod port 80 for the container
+        - containerPort: 8080 # Open pod port 8080 for the container
         env: # [OPTIONAL] add environments values 
         - name: MONGO_HOST
           value: lc-db
