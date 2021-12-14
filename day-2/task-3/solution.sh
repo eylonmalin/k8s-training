@@ -53,9 +53,9 @@ EOF
 }
 
 create-web-deploy(){
-	printAndExec kubectl apply -f web-deploy.yaml
-  printAndExec kubectl get deploy
-  printAndExec kubectl rollout history deployment lc-web
+	printWaitExec kubectl apply -f web-deploy.yaml
+  printWaitExec kubectl get deploy
+  printWaitExec kubectl rollout history deployment lc-web
 }
 
 write-web-svc-yaml(){
@@ -79,8 +79,8 @@ EOF
 }
 
 create-web-svc(){
-	printAndExec kubectl apply -f web-svc.yaml
-	printAndExec kubectl get svc
+	printWaitExec kubectl apply -f web-svc.yaml
+	printWaitExec kubectl get svc
 }
 
 get-pods-every-2-sec-until-running(){
@@ -112,20 +112,20 @@ curl-localhost(){
 
 check-logs-in-pods(){
   for pod in `kubectl get po | grep lc-web | awk '{print $1}'`; do
-    printAndExec kubectl logs $pod
+    printWaitExec kubectl logs $pod
     echo "---------------------------------------------------"
   done
 }
 
 apply-web-deploy(){
-  printAndExec kubectl apply -f web-deploy.yaml
-  printAndExec kubectl rollout history deployment lc-web
+  printWaitExec kubectl apply -f web-deploy.yaml
+  printWaitExec kubectl rollout history deployment lc-web
   sleep 1
 }
 
 rollout-undo(){
-  printAndExec kubectl rollout undo deployment lc-web
-  printAndExec kubectl rollout history deployment lc-web
+  printWaitExec kubectl rollout undo deployment lc-web
+  printWaitExec kubectl rollout history deployment lc-web
   sleep 1
 }
 
