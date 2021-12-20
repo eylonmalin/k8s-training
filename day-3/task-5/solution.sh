@@ -1,9 +1,6 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 write-db-deploy-yaml(){
   rm -f db-deploy.yaml
@@ -142,51 +139,28 @@ EOF
 }
 
 apply-change(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-}
-
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
+  printWaitExec kubectl apply -f $1
 }
 
 create-health-problem-in-lc-app-pod(){
   local lc_app_pod_name=$(kubectl get po | grep lc-app | awk '{print $1}')
-  echo -n "\$ kubectl exec -it ${lc_app_pod_name} -- rm -rf media"
-  read text
-  kubectl exec -it ${lc_app_pod_name} -- rm -rf media
+  printWaitExec kubectl exec -it ${lc_app_pod_name} -- rm -rf media
 }
 
-get-web-svc-node-port(){
-  WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
-  read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }
-  cut -d'/' -f1 <<< $web_node_port
+watch-endpoints-and-pods() {
+  while read endpoint_status <<< `kubectl get endpoints | grep lc-app | awk '{print NF}'`; [[ "$endpoint_status" != "3" ]]; do
+    printExec kubectl get endpoints
+    echoDashes
+    printExec kubectl get po -o wide --show-labels
+    echoDashes
+    sleep 2
+  done
+  printExec kubectl get endpoints
+  echoDashes
+  printExec kubectl get po -o wide --show-labels
+  echoDashes
 }
 
-curl-each-node(){
-  web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login"
-  read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login)
-  echo $RESULT
-  echo "---------------------------------------------------"
-}
 
 clear
 echo
@@ -204,12 +178,10 @@ echo -e "    update with kubectl apply -f app-deploy.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the app Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
@@ -220,50 +192,42 @@ echo -e "    update with kubectl apply -f db-deploy.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing db-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-db-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the db Deployment:${NC}"
 apply-change db-deploy.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-app
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "3. Add Liveness and Readiness Probes to Lets-Chat-Web yaml file and "
 echo -e "    update with kubectl apply -f web-deploy.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing web-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-web-deploy-yaml
-echo "----------------------------------------------"
+echoDashes
 read text
 echo -e "${GREEN}Update the web Deployment:${NC}"
 apply-change web-deploy.yaml
 read text
-echo -n "Next >>"
-read text
-clear
+next
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-web 3
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "4. Create a health problem in one of the Lets-Chat-App pods and verify it is removed from the Service endpoints.${NC}"
 echo -n ">>"
 read text
 create-health-problem-in-lc-app-pod
-echo -n "Next >>"
-read text
-clear
-echo -e "${GREEN}Going to curl the Service on each node:${NC}"
+next
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
+curl-each-node
+echo -e "5. Watch endpoint state and pod status ${NC}"
+watch-endpoints-and-pods
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
