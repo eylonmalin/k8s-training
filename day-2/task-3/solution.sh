@@ -89,11 +89,7 @@ get-pods-every-2-sec-until-running(){
   printExec kubectl get po -o wide --show-labels
 }
 
-get-web-svc-node-port(){
-  WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
-  read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }
-  cut -d'/' -f1 <<< $web_node_port
-}
+
 
 curl-localhost(){
   web_node_port=$(get-web-svc-node-port)

@@ -95,21 +95,6 @@ get-pods-every-2-sec-until-running(){
   kubectl get po -o wide --show-labels | grep $1
 }
 
-get-web-svc-node-port(){
-  WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
-  read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }
-  cut -d'/' -f1 <<< $web_node_port
-}
-
-curl-each-node(){
-  web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login"
-  read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login)
-  echo $RESULT
-  echo "---------------------------------------------------"
-}
-
 label-node(){
   echo -n "\$ kubectl label node kind-worker app=letschat"
   read text
@@ -183,5 +168,5 @@ echo -e "4. Check in Browser, even after restart pod User is persistent ${NC}"
 echo -n ">>"
 read text
 clear
-echo -e "${GREEN}Going to curl the Service on each node:${NC}"
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node

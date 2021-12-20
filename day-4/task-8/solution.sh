@@ -99,20 +99,6 @@ get-pods-every-2-sec-until-running(){
   kubectl get po -o wide --show-labels | grep $1
 }
 
-get-web-svc-node-port(){
-  WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
-  read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }
-  cut -d'/' -f1 <<< $web_node_port
-}
-
-curl-each-node(){
-  web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login"
-  read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null kind-worker:$web_node_port/login)
-  echo $RESULT
-  echo "---------------------------------------------------"
-}
 
 clear
 echo
@@ -146,5 +132,5 @@ get-pods-every-2-sec-until-running lc-web 3
 echo -n "Next >>"
 read text
 clear
-echo -e "${GREEN}Going to curl the Service on each node:${NC}"
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node

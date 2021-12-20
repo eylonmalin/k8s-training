@@ -195,38 +195,11 @@ EOF
   cat web-svc.yaml
 }
 
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
 
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
 
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    printExec kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
-}
 
-get-web-svc-node-port(){
-  WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
-  read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }
-  cut -d'/' -f1 <<< $web_node_port
-}
 
-curl-each-node(){
-  web_node_port=$(get-web-svc-node-port)
-  echo -n "\$ curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/login"
-  read text
-  RESULT=$(curl --write-out %{http_code} --silent --output /dev/null localhost:$web_node_port/login)
-  echo $RESULT
-  echo "---------------------------------------------------"
-}
+
 
 clear
 echo
@@ -318,5 +291,5 @@ echo -e "${ORANGE}--------------------------------------------------------------
 echo -e "4. Open the service on the Node Port and access the login page.${NC}"
 echo -n ">>"
 read text
-echo -e "${GREEN}Going to curl the Service on each node:${NC}"
+echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
