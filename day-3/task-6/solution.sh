@@ -17,6 +17,12 @@ clean(){
 
 
 write-db-secret-yaml(){
+  echo "admin | base64"
+  echo -n "admin" | base64
+  echo "1f2d1e2e67df | base64"
+  echo -n "1f2d1e2e67df" | base64
+  echoDashes
+
   cat > db-secret.yaml <<EOF
 apiVersion: v1
 kind: Secret
