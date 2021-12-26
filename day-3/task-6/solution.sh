@@ -1,27 +1,18 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 clean(){
   local lc_config=$(kubectl get cm | grep lc-config  | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_config} ]]; then
-    echo "\$ kubectl delete cm ${lc_config}"
-    kubectl delete cm ${lc_config}
+    printExec kubectl delete cm ${lc_config}
   fi
 
   local lc_secret=$(kubectl get secret | grep lc-db | awk '{print $1}') >> /dev/null
   if [[ -n ${lc_secret} ]]; then
-    echo "\$ kubectl delete secret ${lc_secret}"
-    kubectl delete secret ${lc_secret}
+    printExec kubectl delete secret ${lc_secret}
   fi
 
-}
-
-run-previous-task-solution(){
-  /bin/bash ../task-5/solution.sh
 }
 
 
@@ -212,46 +203,13 @@ EOF
 }
 
 create-configmap(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-  echo -n "\$ kubectl get cm"
-  read text
-  kubectl get cm
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get cm
 }
 
 create-secret(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-  echo -n "\$ kubectl get secret"
-  read text
-  kubectl get secret
-}
-
-apply-change(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-}
-
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get secret
 }
 
 
@@ -271,83 +229,69 @@ echo -e "1. Create ConfigMap in yaml file using **kubectl apply -f lc-config.yam
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing lc-config.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-lc-config-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the lets-chat ConfigMap:${NC}"
 create-configmap lc-config.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "2. Update Lets-Chat-Web Deployment to take the value of **CODE_ENABLED** from the ConfigMap${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing web-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-web-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the web Deployment:${NC}"
 apply-change web-deploy.yaml
 read text
 clear
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-web 3
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "3. Create Secret in yaml file using kubectl apply -f db-secret.yaml command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing db-secret.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-db-secret-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the db Secret:${NC}"
 create-secret db-secret.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "4. Update Lets-Chat-DB and Lets-Chat-APP Deployments to take the values from the Secret${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing db-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-db-deploy-yaml "WITH_SECRET"
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the DB Deployment:${NC}"
 apply-change db-deploy.yaml
 read text
-echo -n "Next >>"
-read text
-clear
+next
+echo -ne "${GREEN}Verify the pods are ready, ${NC}"
+get-pods-every-2-sec-until-running lc-db 1
+next
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml "WITH_SECRET"
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the App Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
-echo -n "Next >>"
-read text
-clear
+next
+echo -ne "${GREEN}Verify the pods are ready, ${NC}"
+get-pods-every-2-sec-until-running lc-app 1
+next
 echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
 

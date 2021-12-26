@@ -64,6 +64,10 @@ curl-each-node(){
   echoDashes
 }
 
+apply-change(){
+  printWaitExec kubectl apply -f $1
+}
+
 get-web-svc-node-port(){
   WEB_SVC_PORT=$(kubectl get svc | grep lc-web |awk '{print $5}')
   read web_svc_cluster_port web_node_port <<< ${WEB_SVC_PORT//[:]/ }

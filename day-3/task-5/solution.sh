@@ -138,10 +138,6 @@ EOF
   cat web-deploy.yaml
 }
 
-apply-change(){
-  printWaitExec kubectl apply -f $1
-}
-
 create-health-problem-in-lc-app-pod(){
   local lc_app_pod_name=$(kubectl get po | grep lc-app | awk '{print $1}')
   printWaitExec kubectl exec -it ${lc_app_pod_name} -- rm -rf media
