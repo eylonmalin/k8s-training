@@ -46,10 +46,3 @@ spec:
             secretKeyRef:
               name: lc-db
               key: password
-        volumeMounts:
-        - name: settings-config
-          mountPath: /usr/src/app/config
-      volumes:
-        - name: settings-config
-          configMap:
-            name: lc-app
