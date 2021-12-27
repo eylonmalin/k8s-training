@@ -1,9 +1,6 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 write-app-config-yaml(){
   cat > app-config.yaml <<EOF
@@ -139,49 +136,30 @@ esac
   cat app-deploy.yaml
 }
 
+exec-ls-for-app-config-dir(){
+  local lc_app_pod_name=$(kubectl get po | grep lc-app | awk '{print $1}')
+  printWaitExec kubectl exec -it ${lc_app_pod_name} -- ls -l /usr/src/app/config
+}
 
+exec-cat-for-app-config-file(){
+  local lc_app_pod_name=$(kubectl get po | grep lc-app | awk '{print $1}')
+  printWaitExec kubectl exec -it ${lc_app_pod_name} -- cat /usr/src/app/config/settings.yml
+}
 
 create-configmap(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-  echo -n "\$ kubectl get cm"
-  read text
-  kubectl get cm
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get cm
 }
 
 create-secret(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-  echo -n "\$ kubectl get secret"
-  read text
-  kubectl get secret
+  printWaitExec kubectl apply -f $1
+  printWaitExec kubectl get secret
 }
 
 apply-change(){
   echo -n "\$ kubectl apply -f $1"
   read text
   kubectl apply -f $1
-}
-
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
 }
 
 
@@ -196,75 +174,67 @@ echo "   ╚═╝    ╚═╝  ╚═╝ ╚══════╝ ╚═╝  �
 echo
 
 echo -e "${RED}Make sure you run this solution after you successfully executed Task 6 solution${NC}"
+next
+echo -e "${GREEN}Discover app config files${NC}"
+echoDashes
+exec-ls-for-app-config-dir
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "1. Create ConfigMap in yaml file using **kubectl apply -f app-config.yaml** command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-config.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-config-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the app ConfigMap:${NC}"
 create-configmap app-config.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "2. Update Lets-Chat-App Deployment to take that ConfigMap as a Volume${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml only-config
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the app Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
 clear
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-app
-echo -n "Next >>"
-read text
-clear
+next
+echo -e "${GREEN}Discover app config files again${NC}"
+exec-cat-for-app-config-file
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "3. Create Secret in yaml file using **kubectl apply -f app-secret.yaml** command${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-secret.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-secret-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Create the app Secret:${NC}"
 create-secret app-secret.yaml
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
 echo -e "4. Update Lets-Chat-APP Deployment to take that Secret as a Volume${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml config-and-secret
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the App Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
 clear
@@ -273,18 +243,14 @@ echo -e "5. Now, change Lets-Chat-App Deployment to take the Secret and the Conf
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml projected
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the App Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
 clear
