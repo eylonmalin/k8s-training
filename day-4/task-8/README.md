@@ -1,5 +1,5 @@
 # Task-8: Volume Mount the Pod Storage into 2 Containers in it.
-![image](https://user-images.githubusercontent.com/34754379/118402169-6d862680-b671-11eb-94d3-3a665989a257.png)
+![image](/assets/volume-2-containers.png)
 1. Add another container to Lets-Chat-Web Pod. The second conatiner will be 
    responsible to logrotate the log file of Lets-Chat-Web.
    > * The logs of lets-chat-web, nginx controller, are located in **/var/log/nginx/letschat**
