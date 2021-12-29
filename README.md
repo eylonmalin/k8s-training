@@ -13,7 +13,7 @@ In this training we will deploy and scale **let's chat** application on kubernet
 ![Screenshot](http://i.imgur.com/C4uMD67.png)
 
 ### Let's Chat Architecture
-![image](https://user-images.githubusercontent.com/34754379/118403211-0e76e080-b676-11eb-88ab-1fa453f8cee8.png)
+![image](/assets/lets-chat-architecture.png)
 
 
 ### Tasks
