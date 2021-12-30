@@ -1,9 +1,6 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 write-web-deploy-yaml(){
   rm -f web-deploy.yaml
@@ -74,31 +71,6 @@ EOF
   cat web-deploy.yaml
 }
 
-apply-change(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-}
-
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
-}
-
 
 clear
 echo
@@ -117,20 +89,16 @@ echo -e "   responsible to logrotate the log file of Lets-Chat-Web.${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing web-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-web-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the web Deployment:${NC}"
 apply-change web-deploy.yaml
 read text
 clear
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-web 3
-echo -n "Next >>"
-read text
-clear
+next
 echo -e "${GREEN}Going to curl the Service on localhost:${NC}"
 curl-each-node
