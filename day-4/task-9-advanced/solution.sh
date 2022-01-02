@@ -1,9 +1,6 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 write-pv-yaml(){
   rm -f pv.yaml
@@ -35,11 +32,10 @@ metadata:
   name: app-uploads
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Mi
-  storageClassName: my-storage
 EOF
   cat pvc.yaml
 }
@@ -118,31 +114,6 @@ EOF
   cat app-deploy.yaml
 }
 
-apply-change(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-}
-
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
-}
-
 
 show-nfs-server(){
   echo -n "\$ ps -ef | grep nfs"
@@ -170,7 +141,6 @@ mkdir-in-node(){
 }
 
 
-
 clear
 echo
 echo "████████╗  █████╗  ███████╗ ██╗  ██╗   ███╗   █████╗      "
@@ -183,67 +153,38 @@ echo
 
 echo -e "${RED}Make sure you run this solution after you successfully executed Task 9 solution${NC}"
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "1. Start the NFS server on your VM (which is outside the Kubernetes Cluster) ${NC}"
-echo -n ">>"
-read text
-show-nfs-server
-read text
-echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "2. Create PersistentVolume to the External NFS Server ${NC}"
-echo -n ">>"
-read text
-echo -e "${GREEN}Writing pv.yaml file:${NC}"
-echo "----------------------------------------------"
-write-pv-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
-echo -e "${GREEN}Update the pv:${NC}"
-apply-change pv.yaml
-read text
-echo -n "\$ kubectl get pv"
-read text
-kubectl get pv
-read text
-echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "3. Create PersistentVolumeClaim for the PersistentVolume ${NC}"
+echo -e "1. Create PersistentVolumeClaim for the PersistentVolume ${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing pvc.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-pvc-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the pvc:${NC}"
 apply-change pvc.yaml
 read text
 kubectl get pvc
 read text
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "4. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim ${NC}"
+echo -e "2. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim ${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing app-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+echoDashes
 write-app-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+echoDashes
+next
 echo -e "${GREEN}Update the app Deployment:${NC}"
 apply-change app-deploy.yaml
 read text
-
 clear
 echo -ne "${GREEN}Verify the pods are ready, ${NC}"
 get-pods-every-2-sec-until-running lc-app 1
 echo -n "Next >>"
 read text
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "5. Check in Browser, even after restart - the uploads in chat remain ${NC}"
+echo -e "3. Check in Browser, even after restart - the uploads in chat remain ${NC}"
 echo -n ">>"
 read text
 clear

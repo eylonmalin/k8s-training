@@ -1,36 +1,16 @@
 # Task-9-advanced: Persist Lets-Chat-APP into External Shared File-System Using **persistentVolumeClaim** Volume
-In this task we would like to mount an External Storage to Lets-Chat-App pod so we could persist the upload files.
-We will use External NFS server.
-1. Start the NFS server on your VM (which is outside the Kubernetes Cluster)
-  > * You can start the NFS server using `sudo systemctl start nfs-kernel-server.service`
-  > * You can check which directory is exported in `sudo cat /etc/exports`
-2. Create PersistentVolume to the External NFS Server using **kubectl apply -f pv.yaml** command
-  > * You can use bellow [Specifications Examples](#specifications-examples) to define pv yaml file
-  > * Your VM server IP is **172.17.0.1** and the path should be as specified in **/etc/exports**
-3. Create PersistentVolumeClaim for the PersistentVolume using **kubectl apply -f pvc.yaml** command
+In this task we would like to use PersistentVolumeClaim  to Lets-Chat-App pod so we could persist the upload files.
+We will use kind Dynamic volume provisioning feature.
+(you can read more about this feature here : https://github.com/kubernetes-sigs/kind/issues/118 and here: https://github.com/rancher/local-path-provisioner)
+1. Create PersistentVolumeClaim for the PersistentVolume using **kubectl apply -f pvc.yaml** command
   > * Make sure the PersistentVolumeClaim is bounded to the PersistentVolume using **kubectl get pv**
-4. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim
+2. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim
   > * The mountPath for persisting uploads should be /usr/src/app/uploads
-5. Check in Browser, even after restart - the uploads in chat remain
+3. Check in Browser, even after restart - the uploads in chat remain
 
   
 ### Specifications Examples
-#### pv.yaml
-```yaml
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: nfs
-spec:
-  storageClassName: my-storage
-  capacity:
-    storage: 10Mi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    server: 10.192.0.1
-    path: "/home/nesia/my-nfs"
-```
+
 #### pvc.yaml
 ```yaml
 apiVersion: v1
@@ -39,11 +19,10 @@ metadata:
   name: my-claim
 spec:
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: 10Mi
-  storageClassName: my-storage
 ```
 
 #### pod-with-pvc.yaml
