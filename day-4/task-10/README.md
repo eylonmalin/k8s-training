@@ -1,4 +1,4 @@
-# Task-9-advanced: Persist Lets-Chat-APP into External Shared File-System Using **persistentVolumeClaim** Volume
+# Task-10: Persist Lets-Chat-APP into External Shared File-System Using **persistentVolumeClaim** Volume
 In this task we would like to use PersistentVolumeClaim  to Lets-Chat-App pod so we could persist the upload files.
 We will use kind Dynamic volume provisioning feature.
 (you can read more about this feature here : https://github.com/kubernetes-sigs/kind/issues/118 and here: https://github.com/rancher/local-path-provisioner)
