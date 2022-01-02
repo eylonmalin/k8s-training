@@ -26,6 +26,7 @@ nodes:
     extraPortMappings:
     - containerPort: 31999
       hostPort: 31999
+      listenAddress: "127.0.0.1"
   # the three workers
   - role: worker
   - role: worker
