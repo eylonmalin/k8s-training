@@ -1,11 +1,11 @@
 # Task-9: Volume Mount Directory from the Node File-System
-In this task we would like to persist the DB data.
+In this task we would like to persist the DB data to external storage.
+In kind-worker node there is a mount at /var/letschat to your local machine /tmp/letschat.
+We would persist DB data to this directory.
 1. Add label to one of the nodes using **kubectl label node kind-worker app=letschat** command
-2. Create some directory for mongofb inside the node 
-  > * You can use `docker exec -it kind-worker bash`
-3. Add nodeSelector to the Lets-Chat-DB Deployment and volume to the hostPath
-  > * The mountPath for persisting mongodb should be /data/db
-4. Check in Browser, even after restart pod User is persistent
+2. Add nodeSelector to the Lets-Chat-DB Deployment and volume to the hostPath
+  > * The mountPath for persisting mongodb should be /var/letschat
+3. Check in Browser, even after restart pod User is persistent
 
   
 ### Specifications Examples

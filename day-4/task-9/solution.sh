@@ -1,9 +1,6 @@
 #!/bin/bash
-RED='\033[0;31m'
-ORANGE='\033[0;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m' 
-NC='\033[0m' # No Color
+
+source ../../tools/solution_utils.sh
 
 write-db-deploy-yaml(){
   rm -f db-deploy.yaml
@@ -63,63 +60,19 @@ spec:
       volumes:
       - name: data
         hostPath:
-          path: /letschat/data
+          path: /var/letschat
       nodeSelector:
         app: letschat
 EOF
   cat db-deploy.yaml
 }
 
-apply-change(){
-  echo -n "\$ kubectl apply -f $1"
-  read text
-  kubectl apply -f $1
-}
 
-get-pods-every-2-sec-until-running(){
-  echo -e "${GREEN}Every 2 sec, get pods:${NC}"
-
-  if [[ $2 -eq 3 ]]; then
-    pods_running_status="Running Running Running"
-  else
-    pods_running_status="Running"
-  fi
-
-  while read pods_status <<< `kubectl get po | grep $1 | awk '{print $3}' | sed ':a;N;$!ba;s/\n/ /g'`; [[ "$pods_status" != "$pods_running_status" ]]; do
-    echo "\$ kubectl get po -o wide --show-labels | grep $1 "
-    kubectl get po -o wide --show-labels | grep $1
-    sleep 2
-    echo "-------------------------------------"
-  done  
-  echo "\$ kubectl get po -o wide --show-labels"
-  kubectl get po -o wide --show-labels | grep $1
-}
 
 label-node(){
-  echo -n "\$ kubectl label node kind-worker app=letschat"
-  read text
-  kubectl label node kind-worker app=letschat
-  echo -n "\$ kubectl get no --show-labels"
-  read text
-  kubectl get no --show-labels
+  printWaitExec kubectl label node kind-worker app=letschat
+  printWaitExec kubectl get no --show-labels
 }
-
-mkdir-in-node(){
-  echo -n "\$ docker exec -it kind-worker mkdir -p /letschat/data"
-  read text
-  docker exec -it kind-worker mkdir -p /letschat/data
-  echo -n "\$ docker exec -it kind-worker ls -l /"
-  read text
-  docker exec -it kind-worker ls -l
-  echo -n "\$ docker exec -it kind-worker ls -l /letschat"
-  read text
-  docker exec -it kind-worker ls -l /letschat
-  echo -n "\$ docker exec -it kind-worker ls -l /letschat/data"
-  read text
-  docker exec -it kind-worker ls -l /letschat/data
-}
-
-
 
 clear
 echo
@@ -139,22 +92,14 @@ read text
 label-node
 read text
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "2. Create some directory for mongodb inside the node ${NC}"
-echo -n ">>"
-read text
-mkdir-in-node
-read text
-echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "3. Add nodeSelector to the Lets-Chat-DB Deployment and volume to the hostPath ${NC}"
+echo -e "2. Add nodeSelector to the Lets-Chat-DB Deployment and volume to the hostPath ${NC}"
 echo -n ">>"
 read text
 echo -e "${GREEN}Writing dc-deploy.yaml file:${NC}"
-echo "----------------------------------------------"
+eachDashes
 write-db-deploy-yaml
-echo "----------------------------------------------"
-echo -n "Next >>"
-read text
-clear
+eachDashes
+next
 echo -e "${GREEN}Update the db Deployment:${NC}"
 apply-change db-deploy.yaml
 read text
@@ -164,7 +109,7 @@ get-pods-every-2-sec-until-running lc-db 1
 echo -n "Next >>"
 read text
 echo -e "${ORANGE}---------------------------------------------------------------------------------------------"
-echo -e "4. Check in Browser, even after restart pod User is persistent ${NC}"
+echo -e "3. Check in Browser, even after restart pod User is persistent ${NC}"
 echo -n ">>"
 read text
 clear
