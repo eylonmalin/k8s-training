@@ -7,7 +7,11 @@ https://docs.docker.com/desktop/mac/install/
 ```shell
 brew install kind
 ```
-3. Create k8s cluster
+3. Create directory for lets-chat app:
+```shell
+   mkdir /tmp/letschat
+```
+4. Create k8s cluster
 ```shell
 kind create cluster --config=kind-config.yaml
 ```

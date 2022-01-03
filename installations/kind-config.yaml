@@ -29,5 +29,8 @@ nodes:
       listenAddress: "127.0.0.1"
   # the three workers
   - role: worker
+    extraMounts:
+      - hostPath: /tmp/letschat
+        containerPath: /var/letschat
   - role: worker
   - role: worker

@@ -9,11 +9,12 @@
    2) Rename the downloaded file to kind.exe
    3) Copy kind.exe to some path where you keep exe tools (like C:/app). We would Call it KIND_PATH
 5. (Optional) install cmder from here : https://cmder.net/
-6. Create k8s cluster
+6. Create directory for our lets-chat app: C:\tmp\letschat
+7. Create k8s cluster
 ```shell
 KIND_PATH/kind.exe create cluster --config=kind-config.yaml
 ```
-4. Validate by running
+8. Validate by running
 ```shell
 kubectl cluster-info --context kind-kind
 ```
