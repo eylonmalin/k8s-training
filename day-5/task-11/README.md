@@ -1,17 +1,19 @@
 # Task-11: Expose Lets-Chat on FQDN:80 Using Ingress and Nginx-Controller
 
-***First - Install Ingress Controller on the kind cluster by following the instructions here: [Setting Up An Ingress Controller](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)***
+***First - Create kind cluster with ingress support by :
+1. cd day-5/setup 
+2. ./setup.sh
+3. instructions where taken from: [Setting Up An Ingress Controller](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)
 
-In this task we would like to expose Lets-Chat application on port 80 - so we could access the application on http://k8s-training.com
+In this task we would like to expose Lets-Chat application on port 80 - so we could access the application on http://localhost/lets-chat
 
 1. Add Ingress with rule to Lets-Chat-Web service using **kubectl apply -f web-ingress.yaml**
-  > * You can use bellow [Specifications Examples](#specifications-examples) to define web-ingress.yaml
-  > * The host to kubernetes cluster is **k8s-training.com**. 
-  > * Verify you can access the application on http://k8s-training.com
-  > * What happens when you login and try to add new room? Check the browser DevTools (F12)
-2. To load balance a WebSocket application with NGINX Ingress controllers, you need to add the nginx.org/websocket-services annotation to your Ingress resource definition. But since the client is connected with WebSocket seesion to the Lets-Chat-App service (and not the Lets-Chat-Web) - You should create another Ingress with rule to Lets-Chat-App
-  > * You should add this Ingress the `nginx.org/websocket-services` annotation
-  > * The path to the WebSocket is `/socket.io/`
+  * You can use bellow [Specifications Examples](#specifications-examples) to define web-ingress.yaml
+  * The host to kubernetes cluster is **localhost**.
+  * The path for let-chat app should be /lets-chat
+  * Verify you can access the application on http://localhost/lets-chat
+  * What happens when you login and try to add new room? Check the browser DevTools (F12)
+  * You might need to use rewrite as described here [ingress-nginx rewrite](https://github.com/kubernetes/ingress-nginx/blob/main/docs/examples/rewrite/README.md#rewrite-target)
 
   
 ### Specifications Examples
@@ -23,7 +25,7 @@ metadata:
   name: my-ingress
 spec:
   rules:
-    - host: my-host.com
+    - host: localhost
       http:
         paths:
           - path: /
