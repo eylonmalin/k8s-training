@@ -1,6 +1,6 @@
 # Task-11: Expose Lets-Chat on FQDN:80 Using Ingress and Nginx-Controller
 
-***First - Create kind cluster with ingress support by :
+***First*** - Create kind cluster with ingress support by :
 1. cd day-5/setup 
 2. ./setup.sh
 3. instructions where taken from: [Setting Up An Ingress Controller](https://kind.sigs.k8s.io/docs/user/ingress/#ingress-nginx)
