@@ -20,7 +20,7 @@ brew install kind
 ```shell
 kind create cluster --config=kind-config.yaml
 ```
-9Validate by running
+9. Validate by running
 ```shell
 kubectl cluster-info --context kind-kind
 ```
