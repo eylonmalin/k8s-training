@@ -16,6 +16,9 @@
 # Start a single pod instance of my-app 
 kubectl run my-app --image=my-app-image 
 
+# create a deploymnet with my-app-image
+kubectl create deployment my-app --image=my-app-image
+
 # List all pods
 kubectl get po
 
