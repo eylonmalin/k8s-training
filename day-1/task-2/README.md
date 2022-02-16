@@ -4,12 +4,12 @@
 1. Create a Service to Lets-Chat-Web microservice using **kubectl expose deploy** command
   > * Get the Service Cluster-IP using `kubectl get svc` command. Then access one of the nodes in the cluster using `docker exec -it kind-worker bash`, and there curl service-cluster-ip:service-port.
 2. Change the Service type from ClusterIP to NodePort to make it accessible from outside the cluster.
-  > * Use `kubectl edit svc my-service-name` to update the service specification with **type: NodePort**
-  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and acceess Lets-Chat-Web UI using localhost:31999.  Make sure you can access the UI also from the other 2 nodes.
+  * Use `kubectl edit svc my-service-name` to update the service specification with **type: NodePort**
+  * Config both port and nodePort to port 31999 (see example bellow) 
+  * Get the Service Node port using `kubectl get svc` command. Then open the browser and acceess Lets-Chat-Web UI using localhost:31999.
 3. Scale the Lets-Chat-Web pods to 4 instances using  **kubectl scale** command
   > * Explore the pods, using `kubectl get po -o wide`, to see which Nodes the new pods were scheduled to.
-  > * Open the browser and acceess Lets-Chat-Web UI using each node in the cluster and see which pod responds.
-4. Scale down the Lets-Chat-Web pods to 2 instances. Now they are running on 2 nodes - but you should be able to get response from every node. The node that is not running the pod will pass it to a pod from the other nodes.
+4. Scale down the Lets-Chat-Web pods to 2 instances. Now they are running on 2 nodes.
 
 ### kubectl Cheat Sheet
   ```bash
@@ -40,4 +40,14 @@ kubectl delete deploy my-deployment-name
 # Delete a service
 kubectl delete svc my-svc-name
 
+```
+
+###NodePort config example:
+```
+ports:
+- nodePort: 31999
+  port: 31999
+  protocol: TCP
+  targetPort: 80
+type: NodePort
 ```
