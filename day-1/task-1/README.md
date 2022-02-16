@@ -32,7 +32,7 @@ kubectl describe po my-pod-name
 kubectl logs my-pod-name
 
 # Execute command in pod container and send stdout/stderr from 'sh' 
-kubectl exec -it my-pod-name sh 
+kubectl exec my-pod-name -it -- sh 
 
 # Listen on port 8888 locally, forwarding to 5000 in the pod
 kubectl port-forward my-pod-name 8888:5000
