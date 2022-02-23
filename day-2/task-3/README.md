@@ -3,6 +3,7 @@
 2. Create new Deployment using **kubectl apply -f web-deploy.yaml** command
   > * You can use bellow [Specifications Examples](#specifications-examples) to define the yaml files
   > * The Image name of Lets-Chat-Web:  **eylonmalin/lets-chat-web:v1**
+  > * The label of the deployment should be `app: lc-web`
   > * The Web server is listening on port 80
   > * The deployment should run 3 pods 
   > * Disable the code feature by configuring the Lets-Chat-Web with environment variable name: **CODE_ENABLED** and value "false".
@@ -10,6 +11,7 @@
 3. Create a Service to Lets-Chat-Web microservice using **kubectl apply -f web-svc.yaml** command
   > * The service type of this microservice should be NodePort
   > * The port and the nodePort should be 31999
+  > * The selector should match the deployment label
 4. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
   > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:31999.
   > * Check the logs of the pods - and see it runs v1 image
