@@ -9,9 +9,9 @@
   > * Add a second label to the pods (in spec.template.labels of web-deploy.yaml) of **version:v1** 
 3. Create a Service to Lets-Chat-Web microservice using **kubectl apply -f web-svc.yaml** command
   > * The service type of this microservice should be NodePort
-  > * The NodePort should be 31999
+  > * The port and the nodePort should be 31999
 4. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
-  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:node-port.
+  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:31999.
   > * Check the logs of the pods - and see it runs v1 image
 5. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **eylonmalin/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
   > * Explore the pods rolling update using `kubectl get po --show-labels`
