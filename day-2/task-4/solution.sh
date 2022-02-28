@@ -114,7 +114,7 @@ spec:
         - containerPort: 8080 # Open pod port 8080 for the container
         env: # [OPTIONAL] add environments values 
         - name: MONGO_HOST
-          value: lc-db
+          value: "lc-db"
         - name: MONGO_PORT
           value: "27017"
 
@@ -168,7 +168,7 @@ spec:
         - name: CODE_ENABLED
           value: "false"
         - name: APP_HOST
-          value: lc-app
+          value: "lc-app"
         - name: APP_PORT
           value: "8080"
 EOF
