@@ -6,7 +6,8 @@ In this task we woul like to get Environment Variables values from ConfigMap and
 2. Update Lets-Chat-Web Deployment to take the value of **CODE_ENABLED** from the ConfigMap
   > * Check what happens when you change the value in the configmap to "true"? Did the value in the pods auto changed?
 3. Create Secret in yaml file using **kubectl apply -f db-secret.yaml** command
-  > * The Secret should contain properties with user and password to mongodb. Note the value should be in base64
+  > * The Secret should contain a property username, and value (pick any name) in base64
+  > * The Secret should contain a property password, and value (pick any name) in base64
 4. Update Lets-Chat-DB and Lets-Chat-APP Deployments to take the values from the Secret
   > * The Lets-Chat-DB should have 2 env variables named: **MONGO_INITDB_ROOT_USERNAME**, **MONGO_INITDB_ROOT_PASSWORD**
   > * The Lets-Chat-App should have another 2 env variables named: **MONGO_USER**, **MONGO_PASS**

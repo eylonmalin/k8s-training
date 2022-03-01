@@ -211,11 +211,13 @@ EOF
 create-configmap(){
   printWaitExec kubectl apply -f $1
   printWaitExec kubectl get cm
+  printWaitExec kubectl describe cm lc-config
 }
 
 create-secret(){
   printWaitExec kubectl apply -f $1
   printWaitExec kubectl get secret
+  printWaitExec kubectl describe secret lc-db
 }
 
 
