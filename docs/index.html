@@ -8,7 +8,7 @@
 
 		<link rel="stylesheet" href="./reveal.js/dist/reset.css">
 		<link rel="stylesheet" href="./reveal.js/dist/reveal.css">
-		<link rel="stylesheet" href="./reveal.js/dist/theme/black.css">
+		<link rel="stylesheet" href="./reveal.js/dist/theme/white.css">
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="/reveal.js/plugin/highlight/monokai.css">
@@ -16,8 +16,37 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section>
+					<img src="./assets/helm.svg">
+					<sub>The
+						package manager
+						for Kubernetes</sub>
+				</section>
+				<section>
+					<h3>What is Helm?</h3>
+					<br>
+					<ul>
+						<li>Helm is a package manager for Kubernetes</li>
+						<li>its packages are called 'charts'</li>
+						<li>Helm charts use templates to add "variables" to k8s yaml files</li>
+						<li>Helm contain commands for managing life cycle of μS like :
+							install, upgrade, rollback, uninstall etc.
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Chart Structure</h3>
+					<br>
+					<ul>
+						<li><b>Chart.yaml</b>  contains the chart's metadata</li>
+						<li><b>Values.yaml</b> contains default chart settings</li>
+						<li><b>templates/</b>  contains the meat of the chart, all yaml files describing k8s
+							objects</li>
+						<li><b>templates/_helpers.tpl</b> optional file which can contain helper code for filling in the
+							templates
+						</li>
+					</ul>
+				</section>
 			</div>
 		</div>
 
