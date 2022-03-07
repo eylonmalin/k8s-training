@@ -10,10 +10,9 @@ In this task we would like to expose Lets-Chat application on port 80 - so we co
 1. Add Ingress with rule to Lets-Chat-Web service using **kubectl apply -f web-ingress.yaml**
   * You can use bellow [Specifications Examples](#specifications-examples) to define web-ingress.yaml
   * The host to kubernetes cluster is **localhost**.
-  * The path for let-chat app should be /lets-chat
+  * The path for let-chat app should be `/lets-chat(/|$)(.*)`
+  * Add rewrite annotation with target `/$2`
   * Verify you can access the application on http://localhost/lets-chat
-  * What happens when you login and try to add new room? Check the browser DevTools (F12)
-  * You might need to use rewrite as described here [ingress-nginx rewrite](https://github.com/kubernetes/ingress-nginx/blob/main/docs/examples/rewrite/README.md#rewrite-target)
 
   
 ### Specifications Examples
@@ -35,28 +34,6 @@ spec:
                 name: my-service
                 port:
                   number: 80
-```
-
-#### ingress-with-websocket-annotation.yaml
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: my-ingress
-  annotations:
-    nginx.org/websocket-services: "my-ws-service"
-spec:
-  rules:
-    - host: my-host.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: my-service
-                port:
-                  number: 8080
 ```
 
 #### ingress-with-rewrite-annotation.yaml
