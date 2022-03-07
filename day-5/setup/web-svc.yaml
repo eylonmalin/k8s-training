@@ -9,5 +9,3 @@ spec:
   - protocol: TCP
     port: 80 # The service port
     targetPort: 80 # The pods port
-    nodePort: 31999 # The node port (external)
-  type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line
