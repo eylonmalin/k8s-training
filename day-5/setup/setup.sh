@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ../../tools/solution_utils.sh
+source ./solution_utils.sh
 
 echo "Going to setup your cluster for k8s-training/day-5"
 echoDashes
