@@ -7,7 +7,7 @@ We would persist DB data to this directory.
 3. Add volume to the hostPath volumeMonut to that volume
   > * The mountPath for persisting mongodb should be /var/letschat
   > * The hostPath (in this case) is also /var/letschat 
-3. Check in Browser, even after restart pod User is persistent
+3. Check login in Browser, even after restart DB pod, User is persistent (no need to create the user again)
 
   
 ### Specifications Examples
