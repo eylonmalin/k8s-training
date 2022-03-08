@@ -12,6 +12,12 @@
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="/reveal.js/plugin/highlight/monokai.css">
+		<script src="plugin/highlight/highlight.js"></script>
+		<script>
+			Reveal.initialize({
+				plugins: [ RevealHighlight ]
+			});
+		</script>
 	</head>
 	<body>
 		<div class="reveal">
@@ -55,7 +61,7 @@
 				</section>
 				<section>
 					<h3>The Chart File Structure</h3>
-					<pre style="width:160%"><code data-trim>
+					<pre style="width:175%"><code data-trim>
 wordpress/
   Chart.yaml          # A YAML file containing information about the chart
   LICENSE             # OPTIONAL: A plain text file containing the license for the chart
@@ -68,6 +74,63 @@ wordpress/
                       # will generate valid Kubernetes manifest files.
   templates/NOTES.txt # OPTIONAL: A plain text file containing short usage notes
 					</code></pre>
+				</section>
+				<section>
+					<h3>Chart.yaml example</h3>
+					<pre><code data-trim>
+apiVersion: v1
+description: A Helm chart for lc-app component
+name: app
+version: 0.1.0
+					</code></pre>
+				</section>
+				<section>
+					<h3>template example</h3>
+					app-config.yaml
+					<pre><code data-trim>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  code.enabled: "{{ .Values.code_enabled }}"
+					</code></pre>
+					values.yaml
+					<pre><code data-trim>
+code_enabled: "false"
+					</code></pre>
+				</section>
+				<section>
+					<h3>dry run</h3>
+					helm install --dry-run --debug lc-app lc-app
+					<pre><code data-trim>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  code.enabled: "false"
+					</code></pre>
+				</section>
+				<section>
+					<h3>helm cheat sheet</h3>
+					<pre style="width:100%"><code data-trim>
+# helm install [app-name] [chart]
+  helm install myredis ./redis
+
+# helm install -f [values.file] [app-name] [chart]
+  helm install -f myvalues.yaml myredis ./redis
+
+# helm install --dry-run --debug -f [values.file] [app-name] [chart]
+  helm install --dry-run --debug -f myvalues.yaml myredis ./redis
+
+# helm upgrade -f [values.file] -f [values.file] [app-name] [chart]
+  helm upgrade -f myvalues.yaml -f override.yaml redis ./redis
+
+# helm uninstall RELEASE_NAME
+  helm uninstall redis
+					</code></pre>
+
 				</section>
 			</div>
 		</div>
