@@ -1,0 +1,6 @@
+lc_app:
+  fullname: lc-app-deploy
+  name: lc-app
+image:
+  repository: eylonmalin
+code_enabled: "false"
