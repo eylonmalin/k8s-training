@@ -35,17 +35,39 @@
 					</ul>
 				</section>
 				<section>
-					<h3>Chart Structure</h3>
+					<h3>Helm charts</h3>
 					<br>
 					<ul>
-						<li><b>Chart.yaml</b>  contains the chart's metadata</li>
-						<li><b>Values.yaml</b> contains default chart settings</li>
-						<li><b>templates/</b>  contains the meat of the chart, all yaml files describing k8s
-							objects</li>
-						<li><b>templates/_helpers.tpl</b> optional file which can contain helper code for filling in the
-							templates
-						</li>
+						<li>Helm uses a packaging format called charts</li>
+						<li>A chart is a collection of files that describe a related set of Kubernetes resources</li>
+						<li>A single chart might be used to deploy something simple like one component</li>
+						<li>or something complex, like a full web app stack with HTTP servers, databases, caches</li>
 					</ul>
+				</section>
+				<section>
+					<h3>The Chart File Structure</h3>
+					<br>
+					<ul>
+						<li>A chart is organized as a collection of files inside of a directory</li>
+						<li>The directory name is the name of the chart</li>
+						<li>Thus, a chart describing WordPress would be stored in a wordpress/ directory</li>
+					</ul>
+				</section>
+				<section>
+					<h3>The Chart File Structure</h3>
+					<pre style="width:160%"><code data-trim>
+wordpress/
+  Chart.yaml          # A YAML file containing information about the chart
+  LICENSE             # OPTIONAL: A plain text file containing the license for the chart
+  README.md           # OPTIONAL: A human-readable README file
+  values.yaml         # The default configuration values for this chart
+  values.schema.json  # OPTIONAL: A JSON Schema for imposing a structure on the values.yaml file
+  charts/             # A directory containing any charts upon which this chart depends.
+  crds/               # Custom Resource Definitions
+  templates/          # A directory of templates that, when combined with values,
+                      # will generate valid Kubernetes manifest files.
+  templates/NOTES.txt # OPTIONAL: A plain text file containing short usage notes
+					</code></pre>
 				</section>
 			</div>
 		</div>
