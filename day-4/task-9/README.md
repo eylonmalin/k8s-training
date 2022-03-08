@@ -5,8 +5,8 @@ We would persist DB data to this directory.
 1. Add label to one of the nodes using **kubectl label node kind-worker app=letschat** command
 2. Add nodeSelector to the Lets-Chat-DB Deployment
 3. Add volume to the hostPath volumeMonut to that volume
-  > * The mountPath for persisting mongodb should be /var/letschat
-  > * The hostPath (in this case) is also /var/letschat 
+  > * The mountPath for persisting mongodb should be /data/db
+  > * The hostPath (in this case) is /var/letschat 
 3. Check login in Browser, even after restart DB pod, User is persistent (no need to create the user again)
 
   
