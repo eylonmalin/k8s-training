@@ -4,9 +4,11 @@
     name: my-azurefile
   spec:
     accessModes:
-      - ReadWriteMany
-    storageClassName: my-azurefile
+      - ReadWriteOnce
+    storageClassName: managed-premium
     resources:
       requests:
         storage: 5Gi
+
+
 
