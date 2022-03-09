@@ -125,12 +125,25 @@ data:
   helm install --dry-run --debug -f myvalues.yaml myredis ./redis
 
 # helm upgrade -f [values.file] -f [values.file] [app-name] [chart]
-  helm upgrade -f myvalues.yaml -f override.yaml redis ./redis
+  helm upgrade -f myvalues.yaml -f override.yaml myredis ./redis
 
-# helm uninstall RELEASE_NAME
-  helm uninstall redis
+# helm uninstall [app-name]
+  helm uninstall myredis
 					</code></pre>
 
+				</section>
+				<section>
+					<h3>helm cheat sheet see status</h3>
+					<pre style="width:100%"><code data-trim>
+# list deployd helm charts
+  helm list
+
+# helm get manifest [app-name]
+  helm get manifest myredis
+
+# helm get manifest [app-name] --revision int
+  helm get manifest myredis --revision 2
+					</code></pre>
 				</section>
 			</div>
 		</div>
