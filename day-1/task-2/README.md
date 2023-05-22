@@ -1,7 +1,7 @@
 # Task-2: Deploy, Expose and Scale Lets-Chat-Web
 1. Create a Deployment of Lets-Chat-Web microservice using **kubectl create deploy** command with image eylonmalin/lets-chat-web:v1
   > * You can get the command options using ` kubectl create --help ` or use bellow [kubectl Cheat Sheet](#kubectl-cheat-sheet)
-1. Create a Service to Lets-Chat-Web microservice using **kubectl expose deploy** command
+2. Create a Service to Lets-Chat-Web microservice using **kubectl expose deploy** command
   > * Get the Service Cluster-IP using `kubectl get svc` command. Then access one of the nodes in the cluster using `docker exec -it kind-worker bash`, and there curl service-cluster-ip:service-port.
 3. Scale the Lets-Chat-Web pods to 4 instances using  **kubectl scale** command
   > * Explore the pods, using `kubectl get po -o wide`, to see which Nodes the new pods were scheduled to.
