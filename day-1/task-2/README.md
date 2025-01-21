@@ -38,12 +38,17 @@ kubectl delete svc my-svc-name
 
 ```
 
-###NodePort config example:
+###Service config example:
 ```
-ports:
-- nodePort: 31999
-  port: 31999
-  protocol: TCP
-  targetPort: 80
-type: NodePort
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service  # The name of your service
+spec:
+  selector:
+    app: my-app  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
+  ports:
+  - protocol: TCP
+    port: 31999 # The service port
+    targetPort: 80 # The pods port
 ```
