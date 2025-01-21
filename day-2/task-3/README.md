@@ -9,11 +9,11 @@
   > * Disable the code feature by configuring the Lets-Chat-Web with environment variable name: **CODE_ENABLED** and value "false".
   > * Add a second label to the pods (in spec.template.labels of web-deploy.yaml) of **version:v1** 
 3. Create a Service to Lets-Chat-Web microservice using **kubectl apply -f web-svc.yaml** command
-  > * The service type of this microservice should be NodePort
-  > * The port and the nodePort should be 31999
+  > * The service type of this microservice should be ClusterIp
+  > * The port should be 31999
   > * The selector should match the deployment label
 4. Verify the pods are ready, and you are able to access Lets-Chat-Web UI via browser using node-port
-  > * Get the Service Node port using `kubectl get svc` command. Then open the browser and access Lets-Chat-Web UI using localhost:31999.
+  > * Use port-forward to expose the port in your local machine.  Then open the browser and access Lets-Chat-Web UI using localhost:31999.
   > * Check the logs of the pods - and see it runs v1 image
 5. Update the deployment, using `kubectl apply -f web-deploy.yaml` command, and change the image to **eylonmalin/lets-chat-web:v2** and also change the label to **version: v2** in spec.template.metadata.labels
   > * Explore the pods rolling update using `kubectl get po --show-labels`
@@ -36,8 +36,7 @@ spec:
   - protocol: TCP
     nodePort: 31999 # the node(external) port
     port: 80 # The service port
-    targetPort: 80 # The pods port
-  type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line 
+  type: ClusterIP # [OPTIONAL] in case of ClusterIP you can drop this line 
 ```
 #### nginx-deploy.yaml
 ```yaml
