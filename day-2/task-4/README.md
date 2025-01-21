@@ -15,7 +15,7 @@
   > * The service type of this microservice should not be NodePort - so don't add **type** to yaml
 3. Update the previous Deploy of Lets-Chat-Web to connect to Lets-Chat-App service using **kubectl apply -f web-deploy.yaml**
   > * You may configure the Lets-Chat-Web with the Lets-Chat-App service-name and port by passing it 2 environment variables: **APP_HOST** and **APP_PORT**
-4. Open the service on the Node Port and access the login page. 
+4. port-forward the lc-web service,  and access the login page. 
   > * Create a user and login. 
   > * Open a different browser and create another user. 
   > * Verfiy you can chat between the users.
@@ -34,7 +34,7 @@ spec:
   - protocol: TCP
     port: 80 # The service port
     targetPort: 9376 # The pods port
-  type: NodePort # [OPTIONAL] If you want ClusterIP you can drop this line 
+  type: ClusterIP # [OPTIONAL] If you want ClusterIP you can drop this line 
 ```
 #### nginx-deploy.yaml
 ```yaml
