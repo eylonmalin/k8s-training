@@ -34,7 +34,7 @@ spec:
     app: nginx  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
   ports:
   - protocol: TCP
-    targetPort: 31999 # the node(external) port
+    targetPort: 80 # the target port in the pod
     port: 80 # The service port
   type: ClusterIP # [OPTIONAL] in case of ClusterIP you can drop this line 
 ```
