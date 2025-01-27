@@ -34,7 +34,7 @@ spec:
     app: nginx  # defines how the Service finds which Pods to target. Should match labels defined in the Pod template
   ports:
   - protocol: TCP
-    nodePort: 31999 # the node(external) port
+    targetPort: 31999 # the node(external) port
     port: 80 # The service port
   type: ClusterIP # [OPTIONAL] in case of ClusterIP you can drop this line 
 ```
@@ -63,5 +63,5 @@ spec:
         - containerPort: 80 # Open pod port 80 for the container
         env: # [OPTIONAL] add environments values 
         - name: SOME_ENV_NAME
-          value: some-env-value
+          value: "some-env-value"
 ```
