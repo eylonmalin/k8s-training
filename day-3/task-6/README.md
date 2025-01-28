@@ -121,3 +121,34 @@ spec:
           key: <K8S_SECRET_KEY>                    # Key in the Kubernetes secret
 ```
 
+#### pod-with-secret-from-keyvault.yaml
+```yaml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: sc-demo-keyvault-csi
+spec:
+  containers:
+    - name: busybox
+      image: registry.k8s.io/e2e-test-images/busybox:1.29-4
+      command:
+        - "/bin/sleep"
+        - "10000"
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+      env:
+      - name: MY_SPECIAL_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: <K8S_SECRET_NAME>   # Name of the Kubernetes secret
+            key: <K8S_SECRET_KEY>     # Key in the Kubernetes secret  
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "<SECRET_PROVIDER_CLASS_NAME>"
+```
