@@ -12,18 +12,32 @@ We will use class storage for azure, and persistent volume claim.
   
 ### Specifications Examples
 
+#### storage-class.yaml
+```yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azure-disk
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: Standard_LRS
+  kind: managed
+  tags: "env=nprd,created_by=username,owner=username"
+```
+
 #### pvc.yaml
 ```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: my-claim
+    name: azure-managed-disk
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
+  storageClassName: azure-disk
   resources:
     requests:
-      storage: 10Mi
+      storage: 5Gi
 ```
 
 #### pod-with-pvc.yaml
@@ -53,5 +67,5 @@ spec:
   volumes:
     - name: redis-data
       persistentVolumeClaim:
-        claimName: my-claim
+        claimName: azure-managed-disk
 ```
