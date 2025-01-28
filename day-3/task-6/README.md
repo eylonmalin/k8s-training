@@ -12,6 +12,9 @@ In this task we woul like to get Environment Variables values from ConfigMap and
   > * The Lets-Chat-DB should have 2 env variables named: **MONGO_INITDB_ROOT_USERNAME**, **MONGO_INITDB_ROOT_PASSWORD**
   > * The Lets-Chat-App should have another 2 env variables named: **MONGO_USER**, **MONGO_PASS**
   > * Verify The Lets-Chat-App is able to authenticate with the DB, when pods start
+5. Update  Lets-Chat-DB and Lets-Chat-APP Deployments to take the values from KeyVault
+  > * Create in your namespace a SecretProviderClass that can connect to the KeyVault
+  > * Update the  Lets-Chat-DB deployment to read the secrets mongo-user and mongo-pass
   
 ### Specifications Examples
 #### configmap.yaml
@@ -86,5 +89,35 @@ spec:
             name: mysecret
             key: password
   restartPolicy: Never
+```
+
+#### secret-provider-class.yaml
+```yaml
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: <SECRET_PROVIDER_CLASS_NAME>
+spec:
+  provider: azure
+  parameters:
+    cloudName: AzurePublicCloud
+    keyvaultName: <KEYVAULT_NAME> # Set to the name of your key vault
+    resourceGroup: <RESOURCE_GROUP>
+    subscriptionId: <SUBSCRIPTION_ID>
+    tenantId: <TENANT_ID>
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"
+    userAssignedIdentityID: <USER_ASSIGNED_IDENTITY_ID>   # Set the clientID of the user-assigned managed identity to use
+    objects:  |
+      array:
+        - |
+          objectName: <SECRET_NAME>            # keyvault secret name
+          objectType: secret
+  secretObjects:                             # Define the secretObjects to sync the secret to a Kubernetes secret
+    - secretName: <K8S_SECRET_NAME>          # Name of the Kubernetes secret
+      type: Opaque
+      data:
+        - objectName: <SECRET_NAME>             # Key Vault secret name
+          key: <K8S_SECRET_KEY>                    # Key in the Kubernetes secret
 ```
 
