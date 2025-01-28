@@ -7,9 +7,9 @@
       - name: mypod
         image: nginx
         volumeMounts:
-          - mountPath: "/mnt/azure"
+          - mountPath: "/mnt/azure-disk"
             name: volume
     volumes:
       - name: volume
         persistentVolumeClaim:
-          claimName: my-azurefile
+          claimName: azure-managed-disk
