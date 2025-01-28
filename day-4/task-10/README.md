@@ -5,9 +5,12 @@ We will use class storage for azure, and persistent volume claim.
 1.  Create StorageClass that can create azure disk with your own tags. Use kubectl apply -f storage-class.yaml.
 2.  Create PersistentVolumeClaim for the PersistentVolume using **kubectl apply -f azure-pvc.yaml** command
   > * Make sure the PersistentVolumeClaim is bounded to the PersistentVolume using **kubectl get pv**
-2. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim
+3. Update the Lets-Chat-App deployment by adding it as a Volume the PersistentVolumeClaim
   > * The mountPath for persisting uploads should be /usr/src/app/uploads
-3. Check in Browser, even after restart - the uploads in chat remain
+4. In order to not create the disk again and again
+  > * run kubectl get pv to get your disk
+  > * run kubecl edit pv pvname and chanage persistentVolumeReclaimPolicy to "Retain"
+5. Check in Browser, even after restart the pod - the uploads in chat remain. Make sure the pv remain the same one
 
   
 ### Specifications Examples
