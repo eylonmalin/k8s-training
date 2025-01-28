@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: azure-disk
+provisioner: disk.csi.azure.com
+parameters:
+  skuname: Standard_LRS
+  kind: managed
+  tags: "env=nprd,created_by=username,owner=usernmae"
