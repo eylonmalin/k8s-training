@@ -2,21 +2,19 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-hello-world
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - http:
         paths:
           - pathType: Prefix
-            path: "/hello(/|$)(.*)"
+            path: "/hello"
             backend:
               service:
                 name: hello
                 port:
                   number: 80
           - pathType: Prefix
-            path: "/world(/|$)(.*)"
+            path: "/world"
             backend:
               service:
                 name: world

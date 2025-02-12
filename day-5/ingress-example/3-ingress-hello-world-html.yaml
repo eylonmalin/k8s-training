@@ -6,14 +6,14 @@ spec:
   rules:
     - http:
         paths:
-          - pathType: Prefix
+          - pathType: ImplementationSpecific
             path: "/hello.html"
             backend:
               service:
                 name: hello
                 port:
                   number: 80
-          - pathType: Prefix
+          - pathType: ImplementationSpecific
             path: "/world.html"
             backend:
               service:
