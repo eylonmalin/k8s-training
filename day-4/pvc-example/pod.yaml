@@ -8,8 +8,8 @@
         image: nginx
         volumeMounts:
           - mountPath: "/mnt/azure-disk"
-            name: volume
+            name: volume-azure-eylon
     volumes:
-      - name: volume
+      - name: volume-azure-eylon
         persistentVolumeClaim:
           claimName: azure-managed-disk

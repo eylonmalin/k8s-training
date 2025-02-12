@@ -344,6 +344,8 @@ spec:
             - --validating-webhook-key=/usr/local/certificates/key
             - --watch-ingress-without-class=true
             - --publish-status-address=localhost
+            - --update-status
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx-controller
           securityContext:
             capabilities:
               drop:
