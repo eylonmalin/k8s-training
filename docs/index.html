@@ -85,34 +85,6 @@ version: 0.1.0
 					</code></pre>
 				</section>
 				<section>
-					<h3>template example</h3>
-					app-config.yaml
-					<pre><code data-trim>
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-data:
-  code.enabled: "{{ .Values.code_enabled }}"
-					</code></pre>
-					values.yaml
-					<pre><code data-trim>
-code_enabled: "false"
-					</code></pre>
-				</section>
-				<section>
-					<h3>dry run</h3>
-					helm install --dry-run --debug lc-app lc-app
-					<pre><code data-trim>
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: app-config
-data:
-  code.enabled: "false"
-					</code></pre>
-				</section>
-				<section>
 					<h3>helm cheat sheet</h3>
 					<pre style="width:100%"><code data-trim>
 # helm install [app-name] [chart]
@@ -149,8 +121,8 @@ data:
 					<h3>Helm Templating</h3>
 					<br>
 					<ul>
-						<li>Helm is a package manager for Kubernetes</li>
-						<li>Templates allow for dynamic configuration and customization</li>
+						<li>Helm uses Go templates to define Kubernetes manifests.</li>
+						<li>Templates allow for dynamic configuration and customization.</li>
 					</ul>
 				</section>
 				<section>
@@ -158,8 +130,244 @@ data:
 					<br>
 					<ul>
 						<li>Templates are written in .yaml files within the templates directory.</li>
-						<li>Basic syntax: {{ .Values.<key> }}</li>
+						<li>Basic syntax: {{ .Values.&lt;key&gt; }}</li>
+						<li>Values are defined in values.yaml.</li>
+						<li>They can be overridden during installation.</li>
 					</ul>
+				</section>
+				<section>
+					<h3>template example</h3>
+					app-config.yaml
+					<pre><code data-trim>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  code.enabled: "{{ .Values.code_enabled }}"
+					</code></pre>
+					values.yaml
+					<pre><code data-trim>
+code_enabled: "false"
+					</code></pre>
+				</section>
+				<section>
+					<h3>dry run</h3>
+					helm install --dry-run --debug lc-app lc-app
+					<pre><code data-trim>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  code.enabled: "false"
+					</code></pre>
+				</section>
+				<section>
+					<h3>Conditional and Loop Constructs</h3>
+					<br>
+					<ul>
+						<li>Use if, else, and range for conditional logic and loops.</li>
+					</ul>
+					<pre><code data-trim>
+# Conditional
+{{- if .Values.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+{{- end }}
+
+# Loop
+{{- range .Values.items }}
+- name: {{ .name }}
+  value: {{ .value }}
+{{- end }}
+					</code></pre>
+				</section>
+				<section>
+  <h3>Difference Between <code>{{</code> and <code>{{-</code></h3>
+  <div>
+    <p><code>{{</code> and <code>{{-</code> are used for templating in Helm. The key difference lies in whitespace control.</p>
+  </div>
+
+  <div>
+    <h3><code>{{</code> (Preserve Whitespace)</h3>
+    <pre><code>
+# Conditional Block
+{{ if .Values.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+{{ end }}
+</code></pre>
+    <p>Preserves any leading whitespace, maintaining the original formatting.</p>
+  </div>
+				</section>
+				<section>
+  <div>
+    <h3><code>{{-</code> (Trim Whitespace)</h3>
+    <pre><code>
+# Loop Block
+{{- range .Values.items }}
+- name: {{ .name }}
+  value: {{ .value }}
+{{- end }}
+</code></pre>
+    <p>Trims any leading whitespace, ensuring proper alignment and reducing unnecessary spaces.</p>
+  </div>
+</section>
+				<section>
+  <div>
+    <h3>When to Use</h3>
+    <ul>
+      <li>Use <code>{{</code> when preserving whitespace aids readability and formatting.</li>
+      <li>Use <code>{{-</code> to trim unwanted whitespace, especially in loops and conditionals.</li>
+    </ul>
+  </div>
+</section>
+				<section>
+  <h3>What Happens If You Dont Use <code>{{-</code> When Needed</h3>
+
+  <div>
+    <p>Consider a Helm template that generates a list of items. Not using <code>{{-</code> can cause unwanted whitespace.</p>
+  </div>
+
+  <div>
+    <pre><code>
+# values.yaml
+items:
+  - name: item1
+    value: value1
+  - name: item2
+    value: value2
+
+# template.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+{{ range .Values.items }}
+  - name: {{ .name }}
+    value: {{ .value }}
+{{ end }}
+</code></pre>
+	  </div>
+				</section>
+				<section>
+  <div>
+    <h3>Resulting YAML</h3>
+	   <p>The resulting YAML will have unwanted spaces, which can cause formatting issues.</p>
+	  <p>Note the extra spaces before each item, which can lead to incorrect YAML formatting.</p>
+    <pre><code>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+
+  - name: item1
+    value: value1
+
+  - name: item2
+    value: value2
+</code></pre>
+
+  </div>
+
+  <div>
+    <h3>With <code>{{-</code></h3>
+    <pre><code>
+# template.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+{{- range .Values.items }}
+  - name: {{ .name }}
+    value: {{ .value }}
+{{- end }}
+</code></pre>
+    <p>Trimming whitespace ensures proper alignment and cleaner YAML.</p>
+  </div>
+
+  <div>
+    <h3>Corrected YAML</h3>
+    <pre><code>
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+  - name: item1
+    value: value1
+  - name: item2
+    value: value2
+</code></pre>
+    <p>The items are now correctly aligned without extra spaces.</p>
+  </div>
+</section>
+				<section>
+					<h3>Helm Functions</h3>
+					<br>
+					<ul>
+						<li>Helm provides built-in functions for string manipulation, data formatting, etc.</li>
+						<li>Common functions: default, required, upper, toYaml</li>
+					</ul>
+					<pre><code data-trim>
+				# Default function
+				apiVersion: v1
+				kind: ConfigMap
+				metadata:
+				  name: {{ default "default-name" .Values.configMapName }}
+				
+				# Required function
+				metadata:
+				  name: {{ required "configMapName is required" .Values.configMapName }}
+					</code></pre>
+				</section>
+				<section>
+					<h3>Using Pipelines with Functions</h3>
+					<br>
+					<ul>
+						<li>Functions can be chained using pipelines (|).</li>
+					</ul>
+					<pre><code data-trim>
+				# Convert to uppercase
+				metadata:
+				  name: {{ .Values.configMapName | upper }}
+				
+				# Convert to YAML
+				data: {{ .Values | toYaml | indent 2 }}
+					</code></pre>
+				</section>
+				<section>
+					<h3>Example: Creating a ConfigMap</h3>
+					<br>
+					<ul>
+						<li>A complete example demonstrating Helm templating and functions.</li>
+					</ul>
+					<pre><code data-trim>
+				# values.yaml
+				configMapName: my-config
+				enabled: true
+				data:
+				  key1: value1
+				  key2: value2
+				
+				# configmap.yaml
+				apiVersion: v1
+				kind: ConfigMap
+				metadata:
+				  name: {{ .Values.configMapName }}
+				data:
+				{{- range $key, $value := .Values.data }}
+				  {{ $key }}: {{ $value | quote }}
+				{{- end }}
+					</code></pre>
 				</section>
 			</div>
 		</div>
