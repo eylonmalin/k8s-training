@@ -12,6 +12,12 @@
 
 		<!-- Theme used for syntax highlighted code -->
 		<link rel="stylesheet" href="/reveal.js/plugin/highlight/monokai.css">
+		<style>
+			/* Custom CSS to shrink the font size of list items */
+			.reveal ul li {
+				font-size: 0.8em; /* Adjust the font size as needed */
+			}
+		</style>
 		<script src="plugin/highlight/highlight.js"></script>
 		<script>
 			Reveal.initialize({
@@ -369,6 +375,80 @@ data:
 				{{- end }}
 					</code></pre>
 				</section>
+            <section>
+                <h3>Helm Helper Templates</h3>
+                <br>
+                <ul>
+                    <li>Helper templates are reusable snippets of code defined in `_helpers.tpl`.</li>
+                    <li>They help in maintaining DRY (Don't Repeat Yourself) principles.</li>
+                    <li>Helpers can be included in other templates using the `include` function.</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Example of a Helper Template</h3>
+				<ul>
+                    <li>This helper template generates a full name for the resource.</li>
+                    <li>It combines the release name and chart name, truncates it to 63 characters, and trims any trailing dashes.</li>
+                </ul>
+                <pre><code data-trim>
+{{- define "web.fullname" -}}
+{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+                </code></pre>
+                
+            </section>
+            <section>
+                <h4>Using Helper Templates in Other Templates</h3>
+				<ul>
+                    <li>The `include` function is used to include the `web.fullname` helper template.</li>
+                    <li>This ensures consistency and reusability across multiple templates.</li>
+                </ul>
+                <pre><code data-trim>
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "web.fullname" . }}
+  labels:
+    {{- include "web.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "web.selectorLabels" . | nindent 4 }}
+                </code></pre>
+            </section>
+            <section>
+                <h4>Defining Labels with Helper Templates</h4>
+				<ul>
+                    <li>This helper template defines common labels for Kubernetes resources.</li>
+                    <li>It includes metadata such as the chart name, release name, version, and managed-by information.</li>
+                </ul>
+                <pre><code data-trim>
+{{- define "web.labels" -}}
+app.kubernetes.io/name: {{ .Chart.Name }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+app.kubernetes.io/version: {{ .Chart.AppVersion }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+                </code></pre>
+            </section>
+            <section>
+                <h4>Using Selector Labels with Helper Templates</h4>
+				<ul>
+                    <li>This helper template defines selector labels for Kubernetes resources.</li>
+                    <li>It includes the chart name and release name to ensure proper resource selection.</li>
+                </ul>
+                <pre><code data-trim>
+{{- define "web.selectorLabels" -}}
+app.kubernetes.io/name: {{ .Chart.Name }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end -}}
+                </code></pre>
+            </section>
 			</div>
 		</div>
 
