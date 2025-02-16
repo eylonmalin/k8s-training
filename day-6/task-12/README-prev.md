@@ -6,7 +6,10 @@ The Lets-Chat-Web will be a simple pod - with one container and no ConfigMap
 Installing helm : https://helm.sh/docs/intro/install/
 
 1. First you should delete the Lets-Chat-Web **deployment**, **service**, **ingress** and **configmap**.
-2. Create scaffold chart using **helm create web**
+1. Create scaffold chart using **helm create web**
+1. Watch the files that has been created, what is the purpose of each file?
+1. Delete the files that are not needed for this task : hpa.yaml, ingress.yaml, serviceaccount.yaml
+1. 
   > * The command will create chart directory with templates of **deployment**, **service** and **ingress**
   > * Update the values.yaml with the image repository and tag of Lets-Chat-Web
   > * In values.yaml ingress section:

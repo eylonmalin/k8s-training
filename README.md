@@ -27,8 +27,8 @@ In this training we will deploy and scale **let's chat** application on kubernet
 8.  [Share Directory Between 2 Containers in a Pod Using **emptyDir** Volume.](day-4/task-8/README.md)
 9.  [Persist Lets-Chat-DB into the Node File-System Using **hostPath** Volume](day-5/task-9/README.md)
 10. [Persist Lets-Chat-APP into External Shared File-System Using **persistentVolumeClaim** Volume](day-5/task-9-advanced/README.md)
-11. [Expose Lets-Chat on FQDN:80 Using Ingress and Nginx-Controller](day-6/task-12/README.md)
-12. [Write Helm Chart for Lets-Chat-Web](day-6/task-12/README.md)
+11. [Expose Lets-Chat on FQDN:80 Using Ingress and Nginx-Controller](day-6/task-12/README-prev)
+12. [Write Helm Chart for Lets-Chat-Web](day-6/task-12/README-prev)
 13. [Use Lets-Chat chart-of-charts To Install/Upgrade](day-6/task-13/README.md)
 
 
