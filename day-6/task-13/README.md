@@ -1,25 +1,55 @@
-# Task-13: Use Lets-Chat chart-of-charts To Install/Upgrade
+# Task-12: Helm Chart from scratch
 
-In this task we will install Lets-Chat complete application using helm chart. 
+In this task we will install Lets-Chat-App using helm chart. (Lets-Chat-Web and Lets-Chat-DB will remain as before)
 
-1. First you should delete the previous helm release of Lets-Chat-Web using **helm delete --purge release-name**
-2. Then you should delete the Lets-Chat-App and Lets-Chat-Db **deployment**, **service**, **ingress**   ,**configmap**, **secret** and **pvc**.
-3. Install Lets-Chat chart-of-charts 
-  > * You can install Lets-Chat as follow:
-```bash
-cd k8s-training/charts/lets-chat
-helm install --name lc .
+Installing helm : https://helm.sh/docs/intro/install/
+
+1. First you should delete the lc-app  **deployment**, **service**
+2. Create scaffold chart using **helm create lc-app**
+3. Watch the files that has been created, what is the purpose of each file?
+4. Delete the files that are not needed for this task : hpa.yaml, ingress.yaml, serviceaccount.yaml
+5.Update the values.yaml with the image repository and tag of Lets-Chat-Web. The repository is eylonmalin/lets-chat-app and the tag is v1
+6. Let's install the chart
+  > * Install the helm chart using `helm install lc-app /path/to-chart`.
+  > * What happened ? Was the pod created ? Why ?
+  > * Run kubectl get deployment lc-app -oyaml.
+  > * Why the deployment is not valid ?
+  > * Change the values.yaml service account create to be false, and try again.
+  > * What happen now ? Did the pod created ? Is it in healthy state ?
+7. Now, lets add the missing configurations to the deployment.
+  > * Add to values.yaml an env section:
+  ```yaml
+env: 
+  MONGO_HOST:  lc-db
+  MONGO_PORT: 27017
 ```
-  > * Verify all pods are up and running and you can access the application on http://k8s-training.com
-4. Now upgrade the image of Lets-Chat-Web and disable logrotate second container
-  > * You can add to values.yaml
+   > * Update the deployment.yaml to take the values from values.yaml. Example of using value in chart:
 ```yaml
-web: 
-  image: navivi/lets-chat-web:v2
-  logrotate:
-    enabled: false
+          env:
+        {{- range $name, $value := .Values.env }}
+          - name: {{ $name }}
+            value: {{ $value | quote }}
+        {{- end }}
 ```
-  > * Update using `helm upgrade lc .`
-  > * Run `watch kubectl get po -l release=lc` to see the upgrade occurs.
-
- 
+  > * Add to the deployment yaml env the values from the secrets:
+```yaml
+          - name: MONGO_USER
+            valueFrom:
+              secretKeyRef:
+                name: lc-db
+                key: username
+          - name: MONGO_PASS
+            valueFrom:
+              secretKeyRef:
+                name: lc-db
+                key: password
+  ```
+  
+  > * Update the deployment using `helm upgrade lc-app /path/to-chart`
+  > * What is the pod status now ?
+8. Unfortunately, the pod is in error state. We need to update the probe. Let's Update the probes to use http get with path: /login and port 8080
+  >> * Add probe section to values.yaml with entry for path
+  >> * Update the in values.yaml the service port to be 8080
+  >> * Update the probes in the deployment.yaml to take the values from values.yaml
+  >> * Upgrae the helm chart and watch the pod status
+  
