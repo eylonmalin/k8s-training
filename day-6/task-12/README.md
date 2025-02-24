@@ -12,9 +12,7 @@ Installing helm : https://helm.sh/docs/intro/install/
 3. Fill the values.yaml with the image tag of Lets-Chat-Web. Take the image from the deployment.yaml.
 4. Change the deployment.yaml to take the values from values.yaml. Example of using value in chart: 
 ```yaml
-        env: 
-        - name: APP_HOST
-          value: "{{ .Values.app.host }}"
+        image: {{ .Values.image.tag }}
 ```
 5. Run `helm install --dry-run lc-web /path-of/chart-path`, where /path-of/chart-path is the path to the created charts directory. Review the yamls that are generated.
 6. If you are satisfied with the result, install the chart with `helm install lc-web /path-of/chart-path`
