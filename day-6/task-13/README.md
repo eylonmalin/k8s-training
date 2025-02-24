@@ -1,14 +1,14 @@
-# Task-12: Helm Chart from scratch
+# Task-13: Helm Chart From Scratch
 
-In this task we will install Lets-Chat-App using helm chart. (Lets-Chat-Web and Lets-Chat-DB will remain as before)
+In this task, we will install Lets-Chat-App using helm chart. (Lets-Chat-Web and Lets-Chat-DB will remain as before)
 
 Installing helm : https://helm.sh/docs/intro/install/
 
-1. First you should delete the lc-app  **deployment**, **service**
-2. Create scaffold chart using **helm create lc-app**
+1. First, you should delete the lc-app  **deployment**, **service**
+2. Create a scaffold chart using **helm create lc-app**
 3. Watch the files that has been created, what is the purpose of each file?
 4. Delete the files that are not needed for this task : hpa.yaml, ingress.yaml, serviceaccount.yaml
-5.Update the values.yaml with the image repository and tag of Lets-Chat-Web. The repository is eylonmalin/lets-chat-app and the tag is v1
+5. Update the values.yaml with the image repository and tag of Lets-Chat-Web. The repository is eylonmalin/lets-chat-app and the tag is v1
 6. Let's install the chart
   > * Install the helm chart using `helm install lc-app /path/to-chart`.
   > * What happened ? Was the pod created ? Why ?

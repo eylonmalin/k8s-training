@@ -20,7 +20,7 @@ Installing helm : https://helm.sh/docs/intro/install/
 8. Use kubectl to get the created resources - deployment, pod, config-map, service
 9. Upgrade the image tag to version v2, and use `helm upgrade lc-web /path-of/chart-path` for upgrading the chart.
 10. Use `kubectl get deploy lc-web -oyaml` and kubectl logs to make sure the deployment was upgraded.
-11. Use `helm rollback lc-web` for rollback the upgrade. Use kubectl to make sure the rollback was success.
+11. Use `helm rollback lc-web` for rollback the upgrade. Use kubectl to make sure the rollback was successful.
 12. Use values for app configuration
   > * Add values for app host, and app port, and change the deployment.yaml to use the values from values.yaml.
   > * Use helm upgrade for applying these changes.
