@@ -51,5 +51,6 @@ env:
   >> * Add probe section to values.yaml with entry for path
   >> * Update the in values.yaml the service port to be 8080
   >> * Update the probes in the deployment.yaml to take the values from values.yaml
-  >> * Upgrae the helm chart and watch the pod status
-  
+  >> * Upgrade the helm chart and watch the pod status
+9. What about the service ? Is it working
+10. Execute port-forward to lc-web service , and make sure the application is up and running.
