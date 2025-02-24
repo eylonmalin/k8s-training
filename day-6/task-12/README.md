@@ -7,7 +7,7 @@ We are going to rewrite the existing yaml files to helm chart.
 
 Installing helm : https://helm.sh/docs/intro/install/
 
-1. First you should delete the Lets-Chat-Web **deployment**, **service**, **ingress** and **configmap**.
+1. First you should delete the Lets-Chat-Web **deployment**, **service**  and **configmap**.
 2. Checkout the lc-web dir. 
 3. Fill the values.yaml with the image tag of Lets-Chat-Web. Take the image from the deployment.yaml.
 4. Change the deployment.yaml to take the values from values.yaml. Example of using value in chart: 
