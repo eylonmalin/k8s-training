@@ -6,16 +6,16 @@ Installing helm : https://helm.sh/docs/intro/install/
 
 1. First, you should delete the lc-app  **deployment**, **service**
 2. Create a scaffold chart using **helm create lc-app**
-3. Watch the files that has been created, what is the purpose of each file?
-4. Delete the files that are not needed for this task : hpa.yaml, ingress.yaml, serviceaccount.yaml
-5. Update the values.yaml with the image repository and tag of Lets-Chat-Web. The repository is eylonmalin/lets-chat-app and the tag is v1
-6. Let's install the chart
+3. Watch the files that have been created, what is the purpose of each file?
+4. Delete the files that are not needed for this task: hpa.yaml, ingress.yaml, serviceaccount.yaml
+5. Update the values.yaml with the image repository and tag of Lets-Chat-App. The repository is eylonmalin/lets-chat-app and the tag is v1
+6. Let's install the chart.
   > * Install the helm chart using `helm install lc-app /path/to-chart`.
   > * What happened ? Was the pod created ? Why ?
   > * Run kubectl get deployment lc-app -oyaml.
   > * Why the deployment is not valid ?
   > * Change the values.yaml service account create to be false, and try again.
-  > * What happen now ? Did the pod created ? Is it in healthy state ?
+  > * What happens now ? Did the pod created ? Is it in healthy state ?
 7. Now, lets add the missing configurations to the deployment.
   > * Add to values.yaml an env section:
   ```yaml
